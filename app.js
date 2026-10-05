@@ -625,29 +625,3 @@
     });
   });
 })();
-
-
-/* mobile-v22 floating travel insurance CTA */
-(() => {
-  if (document.querySelector('.floating-insurance-cta')) return;
-
-  const cta = document.createElement('a');
-  cta.className = 'floating-insurance-cta';
-  cta.href = 'https://itraveleurope.com/';
-  cta.target = '_blank';
-  cta.rel = 'noopener';
-  cta.textContent = 'Compare travel insurance';
-  cta.setAttribute('aria-label', 'Compare travel insurance on iTravelEurope');
-
-  document.body.appendChild(cta);
-  document.body.classList.add('has-floating-insurance-cta');
-
-  const updateFloatingCta = () => {
-    const shouldShow = window.innerWidth <= 720 && window.scrollY > 140;
-    cta.classList.toggle('is-visible', shouldShow);
-  };
-
-  updateFloatingCta();
-  window.addEventListener('scroll', updateFloatingCta, { passive: true });
-  window.addEventListener('resize', updateFloatingCta);
-})();
