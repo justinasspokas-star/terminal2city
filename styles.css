@@ -157,8 +157,6 @@
   .trust-row{font-size:8.5px}
 }
 
-
-/* mobile-v22: floating travel insurance CTA */
 .floating-insurance-cta{
   position:fixed;
   left:50%;
@@ -196,24 +194,7 @@
 }
 @media(max-width:760px){
   .floating-insurance-cta{display:flex!important}
-  body.has-floating-insurance-cta{padding-bottom:78px}
 }
 @media(min-width:761px){
   .floating-insurance-cta{display:none!important}
-}
-
-
-/* mobile-v23 CTA hardening */
-@media(max-width:760px){
-  .floating-insurance-cta{
-    display:flex!important;
-    visibility:visible!important;
-    bottom:max(14px,env(safe-area-inset-bottom));
-    z-index:9999!important;
-  }
-  .floating-insurance-cta.is-visible{
-    opacity:1!important;
-    transform:translate(-50%,0)!important;
-    pointer-events:auto!important;
-  }
 }
