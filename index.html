@@ -1,0 +1,28 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>Terminal2City – Compare airport transfers before you land</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="color-scheme" content="light">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Caveat:wght@600&display=swap">
+<link rel="stylesheet" href="landing.css"></head><body>
+<header class="site-header"><div class="wrap"><a class="logo" href="index.html" aria-label="Terminal2City home">Terminal<b>2</b>City</a><nav id="nv" class="nav" aria-label="Main navigation"><a class="active" href="index.html">Home</a><a href="airport-transfers.html">Routes</a><a href="about.html">About</a><a class="partner-link" href="partners.html">For operators</a></nav><div class="hr"><label class="cur"><select id="cur" aria-label="Currency"><option value="GBP">£ GBP</option><option value="EUR">€ EUR</option><option value="USD">$ USD</option></select></label><button class="pill menu" id="mn" aria-label="Menu" aria-expanded="false" aria-controls="nv">☰</button></div></div></header>
+<main id="top">
+<section class="hero"><img class="band" src="assets/landing/hero_band.webp" alt="Heathrow Terminal 2, buses, trains, taxis and London skyline" width="1998" height="522">
+<div class="note a">Same airport,<br>more ways<br>to explore ↷</div><div class="note b">LONDON<br><small style="font-size:18px">Here we go!</small></div>
+<div class="in wrap"><h1>Compare airport transfers <span>before you land</span></h1><p>Buses, trains, taxis and more — all in one place. Get to London for less, with zero stress.</p></div></section>
+<div class="wrap">
+<form class="search" id="compare" aria-label="Compare transfers">
+<label class="f"><span>Airport</span><select id="ap"><option value="LHR">London Heathrow (LHR)</option><option value="LGW">London Gatwick (LGW)</option><option value="STN">London Stansted (STN)</option><option value="LTN">London Luton (LTN)</option><option value="LCY">London City (LCY)</option></select></label>
+<label class="f"><span>Terminal</span><select id="tm"></select></label>
+<label class="f"><span>Destination</span><select id="ds"><option>Central London</option><option>Canary Wharf</option><option>Wembley</option><option>King's Cross</option></select></label>
+<label class="f"><span>Travellers</span><select id="tr"><option value="1">1 adult</option><option value="2" selected>2 adults</option><option value="3">3 adults</option><option value="4">4 adults</option></select></label>
+<label class="f"><span>Bags</span><select id="bg"><option>1 bag</option><option selected>2 bags</option><option>3 bags</option><option>4 bags</option></select></label>
+<label class="f"><span>Arrival time</span><input id="dt" type="datetime-local"></label>
+<button class="go" type="submit">Compare transfers →</button></form>
+<section id="results" aria-live="polite"></section>
+<div class="trust"><div><i class="ic">🔍</i><span><b>Compare trusted operators</b>All the options in one place</span></div><div><i class="ic">🏷️</i><span><b>Best prices, no hidden fees</b>See the full cost up front</span></div><div><i class="ic">🛡️</i><span><b>Real customer reviews</b>Book with confidence</span></div><div><i class="ic">⚡</i><span><b>Fast &amp; easy booking</b>Get your ticket in minutes</span></div></div>
+<div class="cols"><section id="routes"><div class="head"><h2>Popular routes from London airports</h2><a href="#compare">View all routes →</a></div>
+<div class="cards c4" id="rt"></div></section>
+<section id="modes"><h2>Choose your way to the city</h2><div class="cards c3" id="md"></div></section></div>
+<div class="bottom"><section><h2 style="font-size:21px;margin:0 0 14px;color:var(--navy)">Select an airport</h2><div class="chips" id="chips"></div></section>
+<aside class="partners" id="about"><img class="lug" src="assets/landing/lug.webp" alt=""><h3>Trusted transport partners</h3><p>Compare top operators, all in one place.</p><img class="strip" src="assets/landing/partners.webp" alt="National Express, Heathrow Express, Elizabeth line, Uber, Addison Lee, Gett"></aside></div>
+</div></main>
+<footer id="help"><div class="wrap"><span>© 2026 Terminal2City</span><span><a href="how-we-compare-airport-transfers.html">How we compare</a> · <a href="partners.html">For operators</a> · <a href="about.html">About</a></span></div></footer>
+<script src="landing.js"></script></body></html>
