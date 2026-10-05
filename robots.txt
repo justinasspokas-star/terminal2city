@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+Disallow: /results.html
+Sitemap: https://terminal2city.com/sitemap.xml
