@@ -584,3 +584,44 @@
     ['input','change'].forEach(ev=>compare.addEventListener(ev,renderGroup)); renderGroup();
   });
 })();
+
+
+/* mobile-v21 hamburger navigation */
+(() => {
+  document.querySelectorAll('.site-header').forEach((header, i) => {
+    const inner = header.querySelector('.header-inner');
+    const nav = header.querySelector('.nav');
+    if (!inner || !nav || header.querySelector('.mobile-menu-button')) return;
+
+    if (!nav.id) nav.id = 'mobile-nav-' + i;
+    const button = document.createElement('button');
+    button.className = 'mobile-menu-button';
+    button.type = 'button';
+    button.setAttribute('aria-label', 'Open menu');
+    button.setAttribute('aria-controls', nav.id);
+    button.setAttribute('aria-expanded', 'false');
+    button.innerHTML = '<span></span><span></span><span></span>';
+    inner.appendChild(button);
+
+    const setOpen = (open) => {
+      header.classList.toggle('menu-open', open);
+      button.setAttribute('aria-expanded', String(open));
+      button.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    };
+
+    button.addEventListener('click', (event) => {
+      event.stopPropagation();
+      setOpen(!header.classList.contains('menu-open'));
+    });
+    nav.querySelectorAll('a').forEach(link => link.addEventListener('click', () => setOpen(false)));
+    document.addEventListener('click', event => {
+      if (!header.contains(event.target)) setOpen(false);
+    });
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape') setOpen(false);
+    });
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 720) setOpen(false);
+    });
+  });
+})();
