@@ -156,3 +156,48 @@
   .field-icon{width:29px;height:29px;flex-basis:29px;font-size:15px}
   .trust-row{font-size:8.5px}
 }
+
+
+/* mobile-v22: floating travel insurance CTA */
+.floating-insurance-cta{
+  position:fixed;
+  left:50%;
+  bottom:16px;
+  transform:translate(-50%,24px);
+  z-index:95;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  min-height:52px;
+  width:min(calc(100% - 28px),420px);
+  padding:0 20px;
+  border-radius:16px;
+  background:linear-gradient(180deg,#173f79,#102f5f);
+  color:#fff;
+  font-size:15px;
+  font-weight:950;
+  letter-spacing:-.01em;
+  text-align:center;
+  box-shadow:0 16px 34px rgba(16,47,95,.30);
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .2s ease,transform .2s ease;
+}
+.floating-insurance-cta::after{
+  content:'→';
+  margin-left:9px;
+  font-size:18px;
+  line-height:1;
+}
+.floating-insurance-cta.is-visible{
+  opacity:1;
+  transform:translate(-50%,0);
+  pointer-events:auto;
+}
+@media(max-width:720px){
+  .floating-insurance-cta{display:flex}
+  body.has-floating-insurance-cta{padding-bottom:78px}
+}
+@media(min-width:721px){
+  .floating-insurance-cta{display:none!important}
+}
