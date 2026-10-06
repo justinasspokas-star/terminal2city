@@ -153,3 +153,30 @@ header nav{margin-left:auto}.cur select{appearance:none;-webkit-appearance:none;
 .destination-search{min-width:0}.destination-fallback{display:block}.google-place-host{width:100%;min-width:0}.google-place-host gmp-place-autocomplete{width:100%;--gmpx-color-surface:#fff;--gmpx-color-on-surface:#0f1f5c;--gmpx-font-family:"Plus Jakarta Sans",system-ui,sans-serif}.field-help.google-ready{color:var(--blue)}.field-help.google-selected{color:#177647}
 .last-mile-card{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:14px;padding:13px 14px;margin:0 0 14px}.last-mile-card.neutral{background:#fbfcff}.last-mile-icon{width:40px;height:40px;border-radius:12px;background:var(--sky);display:grid;place-items:center;font-size:18px}.last-mile-card span{display:block;color:var(--blue);font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em}.last-mile-card h4{margin:2px 0 3px;color:var(--navy);font-size:14px}.last-mile-card p{margin:0;color:var(--mute);font-size:12px;line-height:1.4}.last-mile-card small{display:block;color:#7b849b;font-size:10.5px;margin-top:4px}.last-mile-card a{white-space:nowrap;background:var(--sky);color:var(--blue);border-radius:10px;padding:9px 11px;font-size:11px;font-weight:800}
 @media(max-width:720px){.last-mile-card{grid-template-columns:auto 1fr}.last-mile-card a{grid-column:1/-1;text-align:center}.google-place-host gmp-place-autocomplete{font-size:14px}}
+
+
+/* family-ticket-v27 */
+.search{grid-template-columns:1fr .82fr 1.5fr 1.55fr .72fr 1.12fr auto}
+.f-group{min-width:0}
+.group-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:2px}
+.group-row label{min-width:0;background:#f7f9fd;border-radius:9px;padding:4px 6px}
+.group-row small{display:block;color:var(--mute);font-size:9px;font-weight:700;white-space:nowrap;line-height:1.15}
+.group-row select{font-size:13px!important;min-height:22px;padding:0!important}
+.ticket-panel{margin-top:13px;padding-top:12px;border-top:1px solid var(--line)}
+.ticket-panel>b{display:block;color:var(--navy);font-size:12px;margin-bottom:7px}
+.ticket-row{display:grid;grid-template-columns:92px 1fr;gap:8px;padding:5px 0;border-top:1px solid #eef1f7}
+.ticket-row:first-of-type{border-top:0}
+.ticket-row small{color:var(--mute);font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.035em}
+.ticket-row span{color:#3f4b68;font-size:11px;line-height:1.35}
+@media(max-width:1020px){
+  .search{grid-template-columns:repeat(3,1fr)}
+  .f-group{grid-column:span 2}
+}
+@media(max-width:720px){
+  .f-group{grid-column:1/-1}
+  .group-row{gap:8px}
+  .group-row label{padding:7px 8px}
+  .group-row small{font-size:10px}
+  .group-row select{font-size:16px!important;min-height:26px}
+  .ticket-row{grid-template-columns:82px 1fr}
+}
