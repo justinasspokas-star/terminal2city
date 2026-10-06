@@ -393,16 +393,106 @@ function recommend(ap,destination,group,bags,late,lat,lng){
   return {cat:cat,primary:primary,alternatives:alternatives,rationale:rationale,guide:routeGuide(ap,cat),lastMile:lastMile};
 }
 
+const FARE_REFERENCES_VERIFIED="2026-10-06";
+function daysUntilTravel(value){
+  const travel=new Date(value);
+  if(Number.isNaN(travel.getTime())) return 0;
+  return Math.max(0,Math.floor((travel.getTime()-Date.now())/86400000));
+}
+function moneyMarkup(value){
+  return '<span class="money" data-cost-gbp="'+Number(value).toFixed(2)+'">£'+Number(value).toFixed(2).replace(/\.00$/,"")+'</span>';
+}
+function referenceCost(option,context){
+  const title=norm(option.title);
+  const g=context.group;
+  const people=Math.max(1,g.total);
+  const days=context.daysAhead||0;
+
+  if(title.indexOf("heathrow express")!==-1){
+    const adultFare=days>=30?10:26;
+    const total=adultFare*g.adults;
+    return {
+      known:true,
+      total:total,
+      per:total/people,
+      label:days>=30?"Advance reference":"Standard single reference",
+      basis:days>=30
+        ?"From £10 per paying adult when booked 30+ days ahead; children 15 and under travel free in Standard with a paying adult."
+        :"£26 Standard single per paying adult; children 15 and under travel free in Standard with a paying adult.",
+      source:"Heathrow Express"
+    };
+  }
+
+  if(context.ap==="LHR" && title==="elizabeth line"){
+    const adultFare=15.50;
+    const youthFare=adultFare/2;
+    const total=adultFare*g.adults+youthFare*g.children11;
+    return {
+      known:true,
+      total:total,
+      per:total/people,
+      label:"TfL PAYG reference",
+      basis:"Zone 1 ↔ Heathrow adult PAYG £15.50. Ages 11–15 are calculated at half adult rate only if the Young Visitor discount is set on Oyster; under-11s are calculated free when accompanied within TfL rules.",
+      source:"TfL"
+    };
+  }
+
+  if(context.ap==="LTN" && title.indexOf("dart + train")!==-1 && g.children===0){
+    const adultFrom=6.50+4.90;
+    const total=adultFrom*g.adults;
+    return {
+      known:true,
+      total:total,
+      per:total/people,
+      label:"From-price reference",
+      basis:"Planning reference using rail from £6.50 plus £4.90 standalone DART per adult. A through ticket to/from Luton Airport (LUA) can price differently and includes DART.",
+      source:"London Luton Airport"
+    };
+  }
+
+  if(context.ap==="SEN" && title.indexOf("greater anglia")!==-1 && g.children===0){
+    const adultFrom=13.40;
+    const total=adultFrom*g.adults;
+    return {
+      known:true,
+      total:total,
+      per:total/people,
+      label:"From-price reference",
+      basis:"Southend Airport → London Liverpool Street from £13.40 each way based on a return fare. Peak, ticket type and Railcard can change the final fare.",
+      source:"Greater Anglia"
+    };
+  }
+
+  let reason="Live fare required before we can calculate the whole-group total.";
+  if(option.type==="hybrid") reason="The rail fare plus the final taxi must both be priced for the selected journey.";
+  if(option.type==="private") reason="Private-transfer prices depend on date, pickup, vehicle size and operator.";
+  if(option.type==="coach") reason="Airport coach fares can vary by departure, booking date, passenger age and operator.";
+  if(option.type==="rail") reason="This rail fare varies by exact station, time, ticket type and booking conditions.";
+  return {known:false,label:"Live fare needed",basis:reason,source:""};
+}
+function costMarkup(cost,cheapest,knownCount){
+  if(!cost.known){
+    return '<div class="cost-panel pending"><div><span>True group cost</span><b>Live fare needed</b></div><small>'+esc(cost.basis)+'</small></div>';
+  }
+  return '<div class="cost-panel '+(cheapest&&knownCount>1?'cheapest':'')+'">'+
+    '<div><span>'+esc(cost.label)+'</span><b>'+moneyMarkup(cost.total)+' total</b></div>'+
+    (cheapest&&knownCount>1?'<em>Lowest reference cost</em>':'')+
+    '<small>'+moneyMarkup(cost.per)+' per traveller · '+esc(cost.basis)+'</small>'+
+    '<i>'+esc(cost.source)+' · checked '+esc(FARE_REFERENCES_VERIFIED)+'</i>'+
+  '</div>';
+}
+
 function metric(label,value){
   return '<div><small>'+label+'</small><b>'+esc(value)+'</b></div>';
 }
 function ticketRow(label,value){
   return '<div class="ticket-row"><small>'+esc(label)+'</small><span>'+esc(value)+'</span></div>';
 }
-function optionMarkup(o,primary,context){
+function optionMarkup(o,primary,context,cost,cheapest,knownCount){
   const ticket=ticketInfo(o,context);
   return '<article class="journey-option '+(primary?'recommended':'')+'">'+
     '<div class="journey-option-top"><span class="journey-icon">'+o.icon+'</span><div><small>'+(primary?'Terminal2City recommends':'Alternative')+'</small><h4>'+esc(o.title)+'</h4><p>'+esc(o.subtitle)+'</p></div></div>'+
+    costMarkup(cost,cheapest,knownCount)+
     '<ul>'+o.why.map(function(x){return '<li>'+esc(x)+'</li>';}).join("")+'</ul>'+
     '<div class="journey-metrics">'+metric("Changes",o.meta.changes)+metric("Walking",o.meta.walk)+metric("Luggage",o.meta.luggage)+metric("Effort",o.meta.effort)+'</div>'+
     '<div class="ticket-panel"><b>Ticket & payment</b>'+ticketRow("How to pay",ticket.pay)+ticketRow("Children",ticket.children)+ticketRow("Booking",ticket.booking)+ticketRow("Flight-delay flexibility",ticket.flexibility)+'</div>'+
@@ -431,7 +521,12 @@ function show(){
   const ready=readiness(ap,$("#dt").value,group.total,bags);
   const late=lateStatus(ap,ready);
   const rec=recommend(ap,dest,group,bags,late,lat,lng);
-  const context={ap:ap,cat:rec.cat,group:group};
+  const context={ap:ap,cat:rec.cat,group:group,daysAhead:daysUntilTravel($("#dt").value)};
+  const options=[rec.primary].concat(rec.alternatives);
+  const costs=options.map(function(o){return referenceCost(o,context);});
+  const knownCosts=costs.filter(function(x){return x.known;});
+  const knownCount=knownCosts.length;
+  const minKnown=knownCount?Math.min.apply(null,knownCosts.map(function(x){return x.total;})):null;
   const terminal=$("#tm").value;
   const range=ready?(fmtTime(ready.low)+"–"+fmtTime(ready.high)):"Add landing time";
   const bagLabel=bags===0?"no large bags":(bags>=4?"4+":bags)+" large bag"+(bags===1?"":"s");
@@ -468,7 +563,8 @@ function show(){
     '</div>'+
     lastMileHtml+
     '<div class="recommendation-callout"><span>Why this wins for your trip</span><p>'+esc(rec.rationale)+'</p></div>'+
-    '<div class="journey-grid">'+optionMarkup(rec.primary,true,context)+rec.alternatives.map(function(o){return optionMarkup(o,false,context);}).join("")+'</div>'+
+    '<div class="cost-disclaimer"><b>True group cost</b><span>Reference totals are shown only where we have a current public fare rule. Dynamic options stay marked “Live fare needed” until operator pricing is connected.</span></div>'+
+    '<div class="journey-grid">'+optionMarkup(options[0],true,context,costs[0],costs[0].known&&Math.abs(costs[0].total-minKnown)<0.01,knownCount)+options.slice(1).map(function(o,i){const cost=costs[i+1];return optionMarkup(o,false,context,cost,cost.known&&Math.abs(cost.total-minKnown)<0.01,knownCount);}).join("")+'</div>'+
     '<div class="result-footer"><div><b>Planning note</b><p>Child fares and ticket conditions can change by operator and ticket type. Terminal exit time includes a planning buffer for passport control, baggage reclaim and airport walking. Always verify the live fare, timetable and operator conditions before booking.</p></div><a class="guide-link" href="'+rec.guide+'">Open detailed route guide →</a></div>';
 
   try{
@@ -503,8 +599,8 @@ document.querySelectorAll('a[href^="#"]').forEach(function(a){
 const R={GBP:[1,"£"],EUR:[1.17,"€"],USD:[1.33,"$"]};
 let C="GBP";
 try{const s=localStorage.getItem("t2c-cur");if(R[s])C=s;}catch(e){}
-function fx(v){const r=R[C];return r[1]+Math.round(v*r[0]);}
-function upd(){document.querySelectorAll("[data-p]").forEach(function(e){e.textContent=fx(+e.dataset.p);});}
+function fx(v){const r=R[C],n=v*r[0];return r[1]+(Math.abs(n-Math.round(n))<0.005?String(Math.round(n)):n.toFixed(2));}
+function upd(){document.querySelectorAll("[data-p]").forEach(function(e){e.textContent=fx(+e.dataset.p);});document.querySelectorAll("[data-cost-gbp]").forEach(function(e){e.textContent=fx(+e.dataset.costGbp);});}
 $("#cur").value=C;
 $("#cur").onchange=function(e){C=e.target.value;try{localStorage.setItem("t2c-cur",C);}catch(_){}upd();};
 upd();
