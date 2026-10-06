@@ -249,9 +249,9 @@ function lateStatus(ap,ready){
 function makeOption(icon,title,subtitle,why,meta,type){
   return {icon:icon,title:title,subtitle:subtitle,why:why,meta:meta,type:type};
 }
-function privateOption(pax,bags){
+function privateOption(group,bags){
   return makeOption("🚕","Pre-booked private transfer","Door to door from the terminal",
-    ["No London interchange for "+pax+" traveller"+(pax===1?"":"s"),bags?(bags>=4?"4+":bags)+" large bag"+(bags===1?"":"s")+" stay with you":"No luggage handling between services","Best when simplicity matters more than lowest fare"],
+    ["No London interchange for "+group.total+" traveller"+(group.total===1?"":"s"),bags?(bags>=4?"4+":bags)+" large bag"+(bags===1?"":"s")+" stay with you":"No luggage handling between services",group.children?"Useful when travelling with children and luggage":"Best when simplicity matters more than lowest fare"],
     {changes:"0",walk:"Very low",luggage:"Excellent",effort:"Very easy"},"private");
 }
 function hybridOption(){
@@ -266,6 +266,58 @@ function coachOption(label){
 }
 function railOption(title,subtitle,why,changes,walk,luggage,effort){
   return makeOption("🚆",title,subtitle,why,{changes:changes||"0–1",walk:walk||"Medium",luggage:luggage||"Moderate",effort:effort||"Moderate"},"rail");
+}
+function ticketInfo(option,context){
+  const title=norm(option.title);
+  const g=context.group;
+  const hasChildren=g.children>0;
+  const tfl=hasAny(title,["elizabeth line","piccadilly","dlr","tube"]);
+  if(title.indexOf("heathrow express")!==-1){
+    return {
+      pay:"Oyster/contactless or a Heathrow Express ticket",
+      children:hasChildren?"Children 15 and under currently travel free in Standard with a paying adult; include a child ticket when booking.":"Children 15 and under currently travel free in Standard with a paying adult.",
+      booking:"Advance fares can be cheaper; pay-as-you-go is also available.",
+      flexibility:"Good — check the conditions of the fare you choose."
+    };
+  }
+  if(tfl){
+    return {
+      pay:"Contactless or Oyster; each traveller aged 11+ needs their own payment method or eligible Oyster.",
+      children:hasChildren?"Under 11s can travel free with a fare-paying adult on TfL rail services (up to 4 per adult); ages 11–15 can use a Young Visitor Oyster discount.":"TfL child rules can materially change family cost.",
+      booking:"No advance booking is needed for normal pay-as-you-go TfL journeys.",
+      flexibility:"High — pay-as-you-go is not tied to a booked departure."
+    };
+  }
+  if(option.type==="hybrid"){
+    return {
+      pay:"Pay the rail leg under its operator/TfL rules, then pay the taxi separately.",
+      children:hasChildren?"Child fare rules apply to the rail leg; taxi and child-seat policies vary by provider.":"Rail and taxi payment rules are separate.",
+      booking:"Rail may be pay-as-you-go or ticketed; the final taxi can be hailed, app-booked or pre-booked.",
+      flexibility:"High–medium — depends on the rail leg and taxi availability."
+    };
+  }
+  if(option.type==="coach"){
+    return {
+      pay:"Book or pay with the coach operator shown for the route.",
+      children:hasChildren?"Child fares and age bands vary by coach operator — check the live fare before booking.":"Coach fare rules vary by operator.",
+      booking:"Booking is recommended for airport coaches where a specific departure is sold.",
+      flexibility:"Varies — check change and missed-service rules before travel."
+    };
+  }
+  if(option.type==="private"){
+    return {
+      pay:"Pre-book and pay the transfer operator directly.",
+      children:hasChildren?"Tell the operator the children's ages; child-seat requirements and availability vary.":"Vehicle price and waiting-time rules vary by operator.",
+      booking:"Pre-booking is recommended.",
+      flexibility:"Check the operator's flight-delay, waiting-time and cancellation policy."
+    };
+  }
+  return {
+    pay:"Buy from the rail operator or an authorised rail retailer; use contactless only where the route explicitly supports it.",
+    children:hasChildren?"Child fares vary by rail product and operator — check the live fare for your exact journey.":"Rail fare rules depend on the ticket product.",
+    booking:"Advance booking may save money on some rail products; others work well as flexible walk-up travel.",
+    flexibility:"Depends on ticket type — flexible fares are safer after an uncertain flight arrival."
+  };
 }
 
 function routeGuide(ap,cat){
@@ -298,13 +350,14 @@ function directPublic(ap,cat){
   return railOption("Elizabeth line or Tube","Use the public option closest to your exact destination",["Compare the final leg, not only airport-to-centre time","Fewer changes usually matter more with luggage","Check live service before travel"]);
 }
 
-function recommend(ap,destination,pax,bags,late,lat,lng){
+function recommend(ap,destination,group,bags,late,lat,lng){
   const lastMile=lastMileFor(lat,lng);
   const cat=destinationCategory(destination,lat,lng);
   const heavy=bags>=3;
-  const group=pax>=4;
+  const largeGroup=group.total>=4;
+  const family=group.children>0;
   const publicOpt=directPublic(ap,cat);
-  const privateOpt=privateOption(pax,bags);
+  const privateOpt=privateOption(group,bags);
   const hybridOpt=hybridOption();
   let primary=publicOpt;
   let alternatives=[hybridOpt,privateOpt];
@@ -316,7 +369,7 @@ function recommend(ap,destination,pax,bags,late,lat,lng){
     primary=privateOpt;
     alternatives=[publicOpt,coachOption()];
     rationale="Your estimated terminal-exit time creates a high late-arrival risk, so a pre-booked door-to-door option is the most resilient plan.";
-  }else if(group&&heavy){
+  }else if(largeGroup&&heavy){
     primary=privateOpt;
     alternatives=[hybridOpt,publicOpt];
     rationale="A larger group with several large bags makes changes, stairs and the final hotel walk much more important.";
@@ -324,14 +377,18 @@ function recommend(ap,destination,pax,bags,late,lat,lng){
     primary=hybridOpt;
     alternatives=[publicOpt,privateOpt];
     rationale="Your selected destination is not right beside "+lastMile.name+" and you have luggage, so rail plus a short final taxi can reduce walking and extra interchanges.";
-  }else if((bags>=2||group)&&["exact","wembley","westend","victoria"].indexOf(cat)!==-1){
+  }else if((bags>=2||largeGroup||family)&&["exact","wembley","westend","victoria"].indexOf(cat)!==-1){
     primary=hybridOpt;
     alternatives=[publicOpt,privateOpt];
-    rationale="Your group or luggage profile makes a rail-plus-final-taxi journey a strong balance between speed and door-to-door simplicity.";
+    rationale=family
+      ? "Travelling with children makes the final walk and extra London changes more important, so rail plus a short taxi is a strong balance of simplicity and speed."
+      : "Your group or luggage profile makes a rail-plus-final-taxi journey a strong balance between speed and door-to-door simplicity.";
   }else if(late.level==="medium"&&bags>=2){
     primary=hybridOpt;
     alternatives=[publicOpt,privateOpt];
     rationale="A later terminal exit plus luggage makes it sensible to reduce London changes while keeping a backup if public transport is disrupted.";
+  }else if(family&&ap==="LHR"&&cat==="paddington"&&norm(publicOpt.title).indexOf("heathrow express")!==-1){
+    rationale="Your destination matches Paddington directly, and current Heathrow Express family rules can make the direct option more competitive because children aged 15 and under travel free in Standard with a paying adult.";
   }
   return {cat:cat,primary:primary,alternatives:alternatives,rationale:rationale,guide:routeGuide(ap,cat),lastMile:lastMile};
 }
@@ -339,17 +396,31 @@ function recommend(ap,destination,pax,bags,late,lat,lng){
 function metric(label,value){
   return '<div><small>'+label+'</small><b>'+esc(value)+'</b></div>';
 }
-function optionMarkup(o,primary){
+function ticketRow(label,value){
+  return '<div class="ticket-row"><small>'+esc(label)+'</small><span>'+esc(value)+'</span></div>';
+}
+function optionMarkup(o,primary,context){
+  const ticket=ticketInfo(o,context);
   return '<article class="journey-option '+(primary?'recommended':'')+'">'+
     '<div class="journey-option-top"><span class="journey-icon">'+o.icon+'</span><div><small>'+(primary?'Terminal2City recommends':'Alternative')+'</small><h4>'+esc(o.title)+'</h4><p>'+esc(o.subtitle)+'</p></div></div>'+
     '<ul>'+o.why.map(function(x){return '<li>'+esc(x)+'</li>';}).join("")+'</ul>'+
     '<div class="journey-metrics">'+metric("Changes",o.meta.changes)+metric("Walking",o.meta.walk)+metric("Luggage",o.meta.luggage)+metric("Effort",o.meta.effort)+'</div>'+
+    '<div class="ticket-panel"><b>Ticket & payment</b>'+ticketRow("How to pay",ticket.pay)+ticketRow("Children",ticket.children)+ticketRow("Booking",ticket.booking)+ticketRow("Flight-delay flexibility",ticket.flexibility)+'</div>'+
   '</article>';
+}
+function groupSummary(group){
+  const parts=[group.adults+" adult"+(group.adults===1?"":"s")];
+  if(group.children11) parts.push(group.children11+" aged 11–15");
+  if(group.under11) parts.push(group.under11+" under 11");
+  return parts.join(" + ");
 }
 
 function show(){
   const ap=$("#ap").value;
-  const n=+$("#tr").value;
+  const adults=+$("#ad").value;
+  const children11=+$("#ch").value;
+  const under11=+$("#u11").value;
+  const group={adults:adults,children11:children11,under11:under11,children:children11+under11,total:adults+children11+under11};
   const bags=+$("#bg").value;
   const dest=$("#ds").value.trim()||"Central London";
   const address=$("#placeAddress").value.trim();
@@ -357,9 +428,10 @@ function show(){
   const lat=parseFloat($("#placeLat").value);
   const lng=parseFloat($("#placeLng").value);
   const hasCoords=Number.isFinite(lat)&&Number.isFinite(lng);
-  const ready=readiness(ap,$("#dt").value,n,bags);
+  const ready=readiness(ap,$("#dt").value,group.total,bags);
   const late=lateStatus(ap,ready);
-  const rec=recommend(ap,dest,n,bags,late,lat,lng);
+  const rec=recommend(ap,dest,group,bags,late,lat,lng);
+  const context={ap:ap,cat:rec.cat,group:group};
   const terminal=$("#tm").value;
   const range=ready?(fmtTime(ready.low)+"–"+fmtTime(ready.high)):"Add landing time";
   const bagLabel=bags===0?"no large bags":(bags>=4?"4+":bags)+" large bag"+(bags===1?"":"s");
@@ -372,21 +444,21 @@ function show(){
     lastMileHtml=
       '<div class="last-mile-card">'+
         '<div class="last-mile-icon">📍</div>'+
-        '<div><span>Exact-destination check</span><h4>'+esc(rec.lastMile.name)+' · ~'+(km<1?km.toFixed(1):km.toFixed(1))+' km straight-line</h4><p><b>'+esc(rec.lastMile.label)+'.</b> '+esc(rec.lastMile.detail)+'</p><small>Distance is to a major arrival hub in our comparison model, not a live walking or driving route.</small></div>'+
+        '<div><span>Exact-destination check</span><h4>'+esc(rec.lastMile.name)+' · ~'+km.toFixed(1)+' km straight-line</h4><p><b>'+esc(rec.lastMile.label)+'.</b> '+esc(rec.lastMile.detail)+'</p><small>Distance is to a major arrival hub in our comparison model, not a live walking or driving route.</small></div>'+
         '<a href="'+mapsUrl+'" target="_blank" rel="noopener">Open destination ↗</a>'+
       '</div>';
   }else if(hasCoords){
     lastMileHtml=
       '<div class="last-mile-card neutral">'+
         '<div class="last-mile-icon">📍</div>'+
-        '<div><span>Exact destination recognised</span><h4>'+esc(displayDestination)+'</h4><p>This address is outside the London, Oxford and Brighton destination clusters currently modelled for last-mile scoring. We will keep the recommendation conservative until the corridor is verified.</p></div>'+
+        '<div><span>Exact destination recognised</span><h4>'+esc(displayDestination)+'</h4><p>This address is outside the London, Oxford and Brighton destination clusters currently modelled for last-mile scoring. We keep the recommendation conservative until the corridor is verified.</p></div>'+
       '</div>';
   }
 
   $("#results").style.display="block";
   $("#results").innerHTML=
     '<div class="result-heading">'+
-      '<div><span class="eyebrow">Personalised planning result</span><h3>'+esc(AIRPORT_NAME[ap])+' → '+esc(displayDestination)+'</h3><p>'+esc(terminal)+' · '+n+' traveller'+(n===1?'':'s')+' · '+esc(bagLabel)+(hasCoords?' · exact place selected':'')+'</p></div>'+
+      '<div><span class="eyebrow">Personalised planning result</span><h3>'+esc(AIRPORT_NAME[ap])+' → '+esc(displayDestination)+'</h3><p>'+esc(terminal)+' · '+esc(groupSummary(group))+' · '+esc(bagLabel)+(hasCoords?' · exact place selected':'')+'</p></div>'+
       '<span class="risk-badge '+late.level+'">'+esc(late.label)+'</span>'+
     '</div>'+
     '<div class="planning-strip">'+
@@ -396,11 +468,11 @@ function show(){
     '</div>'+
     lastMileHtml+
     '<div class="recommendation-callout"><span>Why this wins for your trip</span><p>'+esc(rec.rationale)+'</p></div>'+
-    '<div class="journey-grid">'+optionMarkup(rec.primary,true)+rec.alternatives.map(function(o){return optionMarkup(o,false);}).join("")+'</div>'+
-    '<div class="result-footer"><div><b>Planning note</b><p>Terminal exit time includes a buffer for passport control, baggage reclaim and walking through the airport. Last-mile distance is an approximate straight-line comparison to selected major hubs. Live queues, walking routes, traffic, engineering work and timetables must be checked before booking.</p></div><a class="guide-link" href="'+rec.guide+'">Open detailed route guide →</a></div>';
+    '<div class="journey-grid">'+optionMarkup(rec.primary,true,context)+rec.alternatives.map(function(o){return optionMarkup(o,false,context);}).join("")+'</div>'+
+    '<div class="result-footer"><div><b>Planning note</b><p>Child fares and ticket conditions can change by operator and ticket type. Terminal exit time includes a planning buffer for passport control, baggage reclaim and airport walking. Always verify the live fare, timetable and operator conditions before booking.</p></div><a class="guide-link" href="'+rec.guide+'">Open detailed route guide →</a></div>';
 
   try{
-    if(typeof gtag==="function") gtag("event","transfer_recommendation_generated",{airport:ap,destination_category:rec.cat,travellers:n,large_bags:bags,late_risk:late.level,recommended_mode:rec.primary.type,exact_place_selected:hasCoords});
+    if(typeof gtag==="function") gtag("event","transfer_recommendation_generated",{airport:ap,destination_category:rec.cat,adults:group.adults,children_11_15:group.children11,children_under_11:group.under11,travellers:group.total,large_bags:bags,late_risk:late.level,recommended_mode:rec.primary.type,exact_place_selected:hasCoords});
   }catch(_){}
 
   $("#results").scrollIntoView({behavior:"smooth",block:"start"});
