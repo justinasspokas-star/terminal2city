@@ -39,6 +39,7 @@ document.querySelectorAll("#rt .card").forEach(function(c){
     $("#ap").value=r[3];
     terms();
     $("#ds").value=r[4];
+    clearPlaceSelection();
     show();
   };
 });
@@ -55,7 +56,72 @@ function hasAny(s,arr){return arr.some(function(x){return s.indexOf(x)!==-1;});}
 function fmtTime(date){return date.toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"});}
 function addMin(date,m){return new Date(date.getTime()+m*60000);}
 
-function destinationCategory(text){
+const DESTINATION_AREAS={
+  london:{s:51.27,n:51.72,w:-0.57,e:0.37},
+  oxford:{s:51.68,n:51.82,w:-1.35,e:-1.12},
+  brighton:{s:50.78,n:50.90,w:-0.25,e:-0.05}
+};
+const DESTINATION_HUBS={
+  london:[
+    {name:"Paddington",cat:"paddington",lat:51.5154,lng:-0.1755},
+    {name:"King's Cross St Pancras",cat:"kings",lat:51.5308,lng:-0.1238},
+    {name:"Victoria",cat:"victoria",lat:51.4952,lng:-0.1439},
+    {name:"Liverpool Street",cat:"city",lat:51.5178,lng:-0.0823},
+    {name:"Farringdon",cat:"city",lat:51.5202,lng:-0.1053},
+    {name:"Tottenham Court Road",cat:"westend",lat:51.5165,lng:-0.1309},
+    {name:"Canary Wharf",cat:"canary",lat:51.5054,lng:-0.0235},
+    {name:"Stratford",cat:"stratford",lat:51.5413,lng:-0.0032},
+    {name:"Wembley Park",cat:"wembley",lat:51.5632,lng:-0.2795}
+  ],
+  oxford:[
+    {name:"Oxford railway station",cat:"oxford",lat:51.7534,lng:-1.2701},
+    {name:"Gloucester Green coach station",cat:"oxford",lat:51.7547,lng:-1.2636}
+  ],
+  brighton:[
+    {name:"Brighton railway station",cat:"brighton",lat:50.8290,lng:-0.1410}
+  ]
+};
+
+function insideArea(lat,lng,box){
+  return Number.isFinite(lat)&&Number.isFinite(lng)&&lat>=box.s&&lat<=box.n&&lng>=box.w&&lng<=box.e;
+}
+function destinationArea(lat,lng){
+  if(insideArea(lat,lng,DESTINATION_AREAS.london)) return "london";
+  if(insideArea(lat,lng,DESTINATION_AREAS.oxford)) return "oxford";
+  if(insideArea(lat,lng,DESTINATION_AREAS.brighton)) return "brighton";
+  return "";
+}
+function haversineKm(aLat,aLng,bLat,bLng){
+  const r=6371,rad=Math.PI/180;
+  const dLat=(bLat-aLat)*rad,dLng=(bLng-aLng)*rad;
+  const x=Math.sin(dLat/2)*Math.sin(dLat/2)+Math.cos(aLat*rad)*Math.cos(bLat*rad)*Math.sin(dLng/2)*Math.sin(dLng/2);
+  return 2*r*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));
+}
+function lastMileFor(lat,lng){
+  const area=destinationArea(lat,lng);
+  if(!area) return null;
+  const hubs=DESTINATION_HUBS[area]||[];
+  if(!hubs.length) return null;
+  let best=null;
+  hubs.forEach(function(h){
+    const km=haversineKm(lat,lng,h.lat,h.lng);
+    if(!best||km<best.distanceKm) best={area:area,name:h.name,cat:h.cat,distanceKm:km};
+  });
+  if(!best) return null;
+  if(best.distanceKm<=0.6){
+    best.label="Short final walk likely";
+    best.detail="The selected destination is close to a major arrival hub in our planning model. Check the exact walking route and step-free access before travel.";
+  }else if(best.distanceKm<=1.8){
+    best.label="Short final connection";
+    best.detail="A short taxi, bus or walk may be easier than adding another rail interchange, especially with luggage.";
+  }else{
+    best.label="Onward connection matters";
+    best.detail="Your destination is not beside the nearest major arrival hub, so include the final Tube, bus or taxi leg when comparing options.";
+  }
+  return best;
+}
+
+function destinationCategory(text,lat,lng){
   const s=norm(text);
   if(hasAny(s,["paddington"])) return "paddington";
   if(hasAny(s,["kings cross","st pancras","euston"])) return "kings";
@@ -67,9 +133,95 @@ function destinationCategory(text){
   if(hasAny(s,["brighton"])) return "brighton";
   if(hasAny(s,["oxford"])) return "oxford";
   if(hasAny(s,["wembley"])) return "wembley";
+  const lm=lastMileFor(lat,lng);
+  if(lm) return lm.cat;
   if(hasAny(s,["central london","london"])) return "london";
   return "exact";
 }
+
+function clearPlaceSelection(){
+  ["#placeId","#placeLat","#placeLng","#placeAddress"].forEach(function(sel){
+    const el=$(sel); if(el) el.value="";
+  });
+}
+function loadGoogleMaps(apiKey){
+  if(window.google&&window.google.maps&&window.google.maps.importLibrary) return Promise.resolve(window.google.maps);
+  if(window.__t2cMapsPromise) return window.__t2cMapsPromise;
+  window.__t2cMapsPromise=new Promise(function(resolve,reject){
+    const cb="__t2cGoogleMapsReady";
+    window[cb]=function(){resolve(window.google.maps);delete window[cb];};
+    const script=document.createElement("script");
+    script.async=true;script.defer=true;
+    script.src="https://maps.googleapis.com/maps/api/js?key="+encodeURIComponent(apiKey)+"&v=weekly&loading=async&callback="+cb;
+    script.onerror=function(){reject(new Error("Google Maps JavaScript API failed to load"));};
+    document.head.appendChild(script);
+  });
+  return window.__t2cMapsPromise;
+}
+async function initGoogleDestinationSearch(){
+  const config=window.T2C_GOOGLE_MAPS||{};
+  const key=(config.apiKey||"").trim();
+  const host=$("#placeHost"),fallback=$("#ds"),hint=$("#destinationHint");
+  if(!host||!fallback) return;
+
+  fallback.addEventListener("input",function(){
+    clearPlaceSelection();
+    if(hint) hint.textContent="Hotel, address, station or postcode";
+  });
+
+  if(!key) return;
+
+  try{
+    await loadGoogleMaps(key);
+    const lib=await google.maps.importLibrary("places");
+    const autocomplete=new lib.PlaceAutocompleteElement({includedRegionCodes:[config.region||"gb"]});
+    autocomplete.placeholder="Hotel, address, station or postcode";
+    autocomplete.setAttribute("aria-label","Exact destination in the United Kingdom");
+    host.appendChild(autocomplete);
+    host.hidden=false;
+    fallback.hidden=true;
+    if(hint){
+      hint.textContent="Search powered by Google Places · select a result";
+      hint.classList.add("google-ready");
+    }
+
+    autocomplete.addEventListener("gmp-select",async function(event){
+      try{
+        const prediction=event.placePrediction;
+        if(!prediction) return;
+        const place=prediction.toPlace();
+        await place.fetchFields({fields:["id","displayName","formattedAddress","location","types"]});
+        const display=place.displayName||String(prediction.text||"")||"";
+        const address=place.formattedAddress||display;
+        const lat=place.location&&place.location.lat?place.location.lat():NaN;
+        const lng=place.location&&place.location.lng?place.location.lng():NaN;
+        fallback.value=display||address;
+        $("#placeId").value=place.id||prediction.placeId||"";
+        $("#placeLat").value=Number.isFinite(lat)?String(lat):"";
+        $("#placeLng").value=Number.isFinite(lng)?String(lng):"";
+        $("#placeAddress").value=address;
+        if(hint){
+          hint.textContent=address?"Selected: "+address:"Destination selected";
+          hint.classList.add("google-selected");
+        }
+      }catch(err){
+        console.warn("Terminal2City: could not read selected Google Place",err);
+        if(hint) hint.textContent="Select a suggested place or enter the destination manually";
+      }
+    });
+
+    autocomplete.addEventListener("gmp-error",function(){
+      host.hidden=true;
+      fallback.hidden=false;
+      if(hint) hint.textContent="Enter hotel, address, station or postcode";
+    });
+  }catch(err){
+    console.warn("Terminal2City: Google Places unavailable",err);
+    host.hidden=true;
+    fallback.hidden=false;
+  }
+}
+initGoogleDestinationSearch();
 
 function readiness(ap,dt,pax,bags){
   const landing=new Date(dt);
@@ -146,8 +298,9 @@ function directPublic(ap,cat){
   return railOption("Elizabeth line or Tube","Use the public option closest to your exact destination",["Compare the final leg, not only airport-to-centre time","Fewer changes usually matter more with luggage","Check live service before travel"]);
 }
 
-function recommend(ap,destination,pax,bags,late){
-  const cat=destinationCategory(destination);
+function recommend(ap,destination,pax,bags,late,lat,lng){
+  const lastMile=lastMileFor(lat,lng);
+  const cat=destinationCategory(destination,lat,lng);
   const heavy=bags>=3;
   const group=pax>=4;
   const publicOpt=directPublic(ap,cat);
@@ -155,7 +308,9 @@ function recommend(ap,destination,pax,bags,late){
   const hybridOpt=hybridOption();
   let primary=publicOpt;
   let alternatives=[hybridOpt,privateOpt];
-  let rationale="Your exact destination is well matched to a public-transport first leg.";
+  let rationale=lastMile
+    ? "Your exact destination is being matched to "+lastMile.name+", the closest major arrival hub in our planning model."
+    : "Your destination is well matched to a public-transport first leg.";
 
   if(late.level==="high"){
     primary=privateOpt;
@@ -165,6 +320,10 @@ function recommend(ap,destination,pax,bags,late){
     primary=privateOpt;
     alternatives=[hybridOpt,publicOpt];
     rationale="A larger group with several large bags makes changes, stairs and the final hotel walk much more important.";
+  }else if(lastMile&&lastMile.distanceKm>1.3&&bags>=2){
+    primary=hybridOpt;
+    alternatives=[publicOpt,privateOpt];
+    rationale="Your selected destination is not right beside "+lastMile.name+" and you have luggage, so rail plus a short final taxi can reduce walking and extra interchanges.";
   }else if((bags>=2||group)&&["exact","wembley","westend","victoria"].indexOf(cat)!==-1){
     primary=hybridOpt;
     alternatives=[publicOpt,privateOpt];
@@ -174,7 +333,7 @@ function recommend(ap,destination,pax,bags,late){
     alternatives=[publicOpt,privateOpt];
     rationale="A later terminal exit plus luggage makes it sensible to reduce London changes while keeping a backup if public transport is disrupted.";
   }
-  return {cat:cat,primary:primary,alternatives:alternatives,rationale:rationale,guide:routeGuide(ap,cat)};
+  return {cat:cat,primary:primary,alternatives:alternatives,rationale:rationale,guide:routeGuide(ap,cat),lastMile:lastMile};
 }
 
 function metric(label,value){
@@ -193,17 +352,41 @@ function show(){
   const n=+$("#tr").value;
   const bags=+$("#bg").value;
   const dest=$("#ds").value.trim()||"Central London";
+  const address=$("#placeAddress").value.trim();
+  const placeId=$("#placeId").value.trim();
+  const lat=parseFloat($("#placeLat").value);
+  const lng=parseFloat($("#placeLng").value);
+  const hasCoords=Number.isFinite(lat)&&Number.isFinite(lng);
   const ready=readiness(ap,$("#dt").value,n,bags);
   const late=lateStatus(ap,ready);
-  const rec=recommend(ap,dest,n,bags,late);
+  const rec=recommend(ap,dest,n,bags,late,lat,lng);
   const terminal=$("#tm").value;
   const range=ready?(fmtTime(ready.low)+"–"+fmtTime(ready.high)):"Add landing time";
   const bagLabel=bags===0?"no large bags":(bags>=4?"4+":bags)+" large bag"+(bags===1?"":"s");
+  const displayDestination=address||dest;
+  let lastMileHtml="";
+  if(rec.lastMile){
+    const km=rec.lastMile.distanceKm;
+    const mapsQuery=encodeURIComponent(displayDestination);
+    const mapsUrl="https://www.google.com/maps/search/?api=1&query="+mapsQuery+(placeId?"&query_place_id="+encodeURIComponent(placeId):"");
+    lastMileHtml=
+      '<div class="last-mile-card">'+
+        '<div class="last-mile-icon">📍</div>'+
+        '<div><span>Exact-destination check</span><h4>'+esc(rec.lastMile.name)+' · ~'+(km<1?km.toFixed(1):km.toFixed(1))+' km straight-line</h4><p><b>'+esc(rec.lastMile.label)+'.</b> '+esc(rec.lastMile.detail)+'</p><small>Distance is to a major arrival hub in our comparison model, not a live walking or driving route.</small></div>'+
+        '<a href="'+mapsUrl+'" target="_blank" rel="noopener">Open destination ↗</a>'+
+      '</div>';
+  }else if(hasCoords){
+    lastMileHtml=
+      '<div class="last-mile-card neutral">'+
+        '<div class="last-mile-icon">📍</div>'+
+        '<div><span>Exact destination recognised</span><h4>'+esc(displayDestination)+'</h4><p>This address is outside the London, Oxford and Brighton destination clusters currently modelled for last-mile scoring. We will keep the recommendation conservative until the corridor is verified.</p></div>'+
+      '</div>';
+  }
 
   $("#results").style.display="block";
   $("#results").innerHTML=
     '<div class="result-heading">'+
-      '<div><span class="eyebrow">Personalised planning result</span><h3>'+esc(AIRPORT_NAME[ap])+' → '+esc(dest)+'</h3><p>'+esc(terminal)+' · '+n+' traveller'+(n===1?'':'s')+' · '+esc(bagLabel)+'</p></div>'+
+      '<div><span class="eyebrow">Personalised planning result</span><h3>'+esc(AIRPORT_NAME[ap])+' → '+esc(displayDestination)+'</h3><p>'+esc(terminal)+' · '+n+' traveller'+(n===1?'':'s')+' · '+esc(bagLabel)+(hasCoords?' · exact place selected':'')+'</p></div>'+
       '<span class="risk-badge '+late.level+'">'+esc(late.label)+'</span>'+
     '</div>'+
     '<div class="planning-strip">'+
@@ -211,12 +394,13 @@ function show(){
       '<div><small>Estimated ready to leave terminal</small><b>'+range+'</b><span>Planning estimate, not live queue data</span></div>'+
       '<div><small>Late-arrival check</small><b>'+(late.level==='high'?'Backup strongly advised':late.level==='medium'?'Check last service':'Normal live check')+'</b><span>'+esc(late.text)+'</span></div>'+
     '</div>'+
+    lastMileHtml+
     '<div class="recommendation-callout"><span>Why this wins for your trip</span><p>'+esc(rec.rationale)+'</p></div>'+
     '<div class="journey-grid">'+optionMarkup(rec.primary,true)+rec.alternatives.map(function(o){return optionMarkup(o,false);}).join("")+'</div>'+
-    '<div class="result-footer"><div><b>Planning note</b><p>Terminal exit time includes a buffer for passport control, baggage reclaim and walking through the airport. It cannot predict live queues, delays, engineering work or traffic. Always verify the live operator timetable before booking.</p></div><a class="guide-link" href="'+rec.guide+'">Open detailed route guide →</a></div>';
+    '<div class="result-footer"><div><b>Planning note</b><p>Terminal exit time includes a buffer for passport control, baggage reclaim and walking through the airport. Last-mile distance is an approximate straight-line comparison to selected major hubs. Live queues, walking routes, traffic, engineering work and timetables must be checked before booking.</p></div><a class="guide-link" href="'+rec.guide+'">Open detailed route guide →</a></div>';
 
   try{
-    if(typeof gtag==="function") gtag("event","transfer_recommendation_generated",{airport:ap,destination_category:rec.cat,travellers:n,large_bags:bags,late_risk:late.level,recommended_mode:rec.primary.type});
+    if(typeof gtag==="function") gtag("event","transfer_recommendation_generated",{airport:ap,destination_category:rec.cat,travellers:n,large_bags:bags,late_risk:late.level,recommended_mode:rec.primary.type,exact_place_selected:hasCoords});
   }catch(_){}
 
   $("#results").scrollIntoView({behavior:"smooth",block:"start"});
