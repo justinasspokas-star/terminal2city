@@ -203,3 +203,13 @@ header nav{margin-left:auto}.cur select{appearance:none;-webkit-appearance:none;
   .cost-panel>div{align-items:flex-start;flex-direction:column;gap:2px}
   .cost-panel b{font-size:17px}
 }
+
+
+/* home-gatwick-guide-v26 */
+.home-gatwick-guide{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;margin-top:12px;padding:13px 15px;background:linear-gradient(135deg,#eef6ff,#fff9e9);border:1px solid #dbe7f5;border-radius:16px;box-shadow:0 5px 16px rgba(15,31,92,.06);color:var(--navy)}
+.home-gatwick-guide:hover{border-color:#9fc3f4;box-shadow:0 10px 24px rgba(15,31,92,.10)}
+.home-gatwick-guide-icon{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:#fff;box-shadow:0 3px 10px rgba(15,31,92,.08)}
+.home-gatwick-guide b{display:block;font-size:14px}
+.home-gatwick-guide small{display:block;margin-top:3px;color:var(--mute);font-size:11.5px;line-height:1.45}
+.home-gatwick-guide>strong{color:var(--blue);font-size:12.5px;white-space:nowrap}
+@media(max-width:720px){.home-gatwick-guide{grid-template-columns:auto 1fr;padding:12px}.home-gatwick-guide>strong{grid-column:2;white-space:normal}.home-gatwick-guide small{font-size:11px}}
