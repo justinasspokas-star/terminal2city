@@ -213,3 +213,8 @@ header nav{margin-left:auto}.cur select{appearance:none;-webkit-appearance:none;
 .home-gatwick-guide small{display:block;margin-top:3px;color:var(--mute);font-size:11.5px;line-height:1.45}
 .home-gatwick-guide>strong{color:var(--blue);font-size:12.5px;white-space:nowrap}
 @media(max-width:720px){.home-gatwick-guide{grid-template-columns:auto 1fr;padding:12px}.home-gatwick-guide>strong{grid-column:2;white-space:normal}.home-gatwick-guide small{font-size:11px}}
+
+
+/* home-route-guide-stack-v27 */
+.home-gatwick-guide + .home-gatwick-guide{margin-top:8px}
+.home-southampton-guide{background:linear-gradient(135deg,#eef7ff,#f4fbff 58%,#fff8e8)}
