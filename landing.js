@@ -323,6 +323,7 @@ function ticketInfo(option,context){
 function routeGuide(ap,cat){
   if(ap==="LHR"&&cat==="oxford") return "heathrow-to-oxford.html";
   if(ap==="LGW"&&cat==="brighton") return "gatwick-to-brighton.html";
+  if(ap==="LGW") return "gatwick-to-london.html";
   if(ap==="LHR") return "heathrow-to-london.html";
   if(ap==="STN") return "stansted-to-london.html";
   if(ap==="LTN") return "luton-to-london.html";
