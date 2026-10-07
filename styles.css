@@ -241,3 +241,38 @@
 .airport-verdict-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0 24px}.airport-verdict-grid article{background:#f8fbff;border:1px solid var(--line);border-radius:14px;padding:14px}.airport-verdict-grid b{color:var(--blue);font-size:9.5px;text-transform:uppercase;letter-spacing:.05em}.airport-verdict-grid h3{margin:4px 0 5px;color:var(--navy);font-size:17px}.airport-verdict-grid p{margin:0;color:var(--muted);font-size:12px;line-height:1.45}
 @media(max-width:850px){.airport-cost-controls{grid-template-columns:1fr 1fr}.airport-cost-results{grid-template-columns:1fr 1fr}.airport-cost-verdict{grid-column:1/-1}.airport-verdict-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:560px){.article-checklist{grid-template-columns:1fr}.airport-cost-controls{grid-template-columns:1fr}.airport-cost-results{grid-template-columns:1fr}.airport-cost-verdict{grid-column:auto}.airport-verdict-grid{grid-template-columns:1fr}}
+
+
+/* gatwick-london-premium-v25 */
+.route-page-image.premium-route-art{
+  background:linear-gradient(145deg,#dcecff,#f6f9ff);
+  border:0;
+  border-radius:28px;
+  padding:0;
+  box-shadow:0 18px 50px rgba(26,65,121,.15),0 4px 14px rgba(26,65,121,.08);
+  overflow:hidden;
+  align-self:center;
+}
+.route-page-image.premium-route-art img{
+  display:block;
+  width:100%;
+  height:auto;
+  aspect-ratio:2/1;
+  object-fit:contain;
+  object-position:center;
+}
+@media(max-width:1040px){
+  .route-page-image.premium-route-art{max-width:780px;width:100%;margin:4px auto 0}
+}
+@media(max-width:720px){
+  .route-page-hero .route-page-shell{gap:22px}
+  .route-page-image.premium-route-art{border-radius:20px;box-shadow:0 12px 30px rgba(26,65,121,.13)}
+  .route-page-image.premium-route-art img{width:100%;height:auto;object-fit:contain}
+}
+@media(max-width:440px){
+  .route-page-image.premium-route-art{border-radius:16px;margin-top:0}
+  .route-page-copy h1{font-size:36px;line-height:1.04}
+  .route-page-copy p{font-size:15px;line-height:1.58}
+  .route-facts{gap:6px}
+  .route-facts span{font-size:11px;padding:7px 9px}
+}
