@@ -59,7 +59,8 @@ function addMin(date,m){return new Date(date.getTime()+m*60000);}
 const DESTINATION_AREAS={
   london:{s:51.27,n:51.72,w:-0.57,e:0.37},
   oxford:{s:51.68,n:51.82,w:-1.35,e:-1.12},
-  brighton:{s:50.78,n:50.90,w:-0.25,e:-0.05}
+  brighton:{s:50.78,n:50.90,w:-0.25,e:-0.05},
+  southampton:{s:50.84,n:50.98,w:-1.52,e:-1.28}
 };
 const DESTINATION_HUBS={
   london:[
@@ -79,6 +80,9 @@ const DESTINATION_HUBS={
   ],
   brighton:[
     {name:"Brighton railway station",cat:"brighton",lat:50.8290,lng:-0.1410}
+  ],
+  southampton:[
+    {name:"Southampton Central",cat:"southampton",lat:50.9076,lng:-1.4136}
   ]
 };
 
@@ -89,6 +93,7 @@ function destinationArea(lat,lng){
   if(insideArea(lat,lng,DESTINATION_AREAS.london)) return "london";
   if(insideArea(lat,lng,DESTINATION_AREAS.oxford)) return "oxford";
   if(insideArea(lat,lng,DESTINATION_AREAS.brighton)) return "brighton";
+  if(insideArea(lat,lng,DESTINATION_AREAS.southampton)) return "southampton";
   return "";
 }
 function haversineKm(aLat,aLng,bLat,bLng){
@@ -131,6 +136,7 @@ function destinationCategory(text,lat,lng){
   if(hasAny(s,["westminster","soho","covent garden","piccadilly","leicester square","west end"])) return "westend";
   if(hasAny(s,["stratford"])) return "stratford";
   if(hasAny(s,["brighton"])) return "brighton";
+  if(hasAny(s,["southampton","mayflower cruise terminal","horizon cruise terminal","city cruise terminal","ocean cruise terminal","qeii cruise terminal","queen elizabeth ii terminal"])) return "southampton";
   if(hasAny(s,["oxford"])) return "oxford";
   if(hasAny(s,["wembley"])) return "wembley";
   const lm=lastMileFor(lat,lng);
@@ -321,6 +327,7 @@ function ticketInfo(option,context){
 }
 
 function routeGuide(ap,cat){
+  if(ap==="LHR"&&cat==="southampton") return "heathrow-to-southampton.html";
   if(ap==="LHR"&&cat==="oxford") return "heathrow-to-oxford.html";
   if(ap==="LGW"&&cat==="brighton") return "gatwick-to-brighton.html";
   if(ap==="LGW") return "gatwick-to-london.html";
@@ -333,6 +340,7 @@ function routeGuide(ap,cat){
 }
 
 function directPublic(ap,cat){
+  if(ap==="LHR"&&cat==="southampton") return coachOption("National Express direct coach");
   if(ap==="LHR"&&cat==="oxford") return coachOption("The Airline coach");
   if(ap==="LHR"&&cat==="paddington") return railOption("Heathrow Express","Non-stop airport rail to Paddington",["Your destination matches the Heathrow Express terminus","No London rail change before Paddington","Strong choice when speed to Paddington matters"],"0","Low","Good","Easy");
   if(ap==="LHR"&&["canary","city"].indexOf(cat)!==-1) return railOption("Elizabeth line","Direct cross-London rail is usually the cleanest first choice",["Serves several central and east-London stations directly","Reduces the need to change at Paddington","Good balance of speed and simplicity"],"0–1","Medium","Good","Easy");
