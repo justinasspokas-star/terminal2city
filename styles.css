@@ -389,3 +389,37 @@
   .route-page-image.southampton-route-art{max-width:100%!important;margin-top:4px!important}
   .route-page-image.southampton-route-art img{max-width:480px!important;filter:drop-shadow(0 11px 20px rgba(22,51,88,.14))}
 }
+
+
+/* southampton-user-art-v32 */
+.route-page-image.southampton-route-art{
+  max-width:640px!important;
+  width:100%!important;
+  margin:0 auto!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+  overflow:visible!important;
+  padding:0!important;
+}
+.route-page-image.southampton-route-art img{
+  display:block!important;
+  width:100%!important;
+  max-width:620px!important;
+  height:auto!important;
+  aspect-ratio:auto!important;
+  object-fit:contain!important;
+  border-radius:24px;
+  filter:drop-shadow(0 16px 26px rgba(22,51,88,.12));
+}
+@media(max-width:1040px){
+  .route-page-image.southampton-route-art{max-width:600px!important}
+  .route-page-image.southampton-route-art img{max-width:580px!important}
+}
+@media(max-width:720px){
+  .route-page-image.southampton-route-art{max-width:100%!important;margin-top:8px!important}
+  .route-page-image.southampton-route-art img{max-width:100%!important;border-radius:18px;filter:drop-shadow(0 10px 18px rgba(22,51,88,.10))}
+}
