@@ -1,4 +1,4 @@
-const IMG={r1:"assets/landing/route1.webp",r2:"assets/landing/route2.webp",r3:"assets/landing/route3.webp",r4:"assets/landing/route4.webp",m1:"assets/landing/mode1.webp",m2:"assets/landing/mode2.webp",m3:"assets/landing/mode3.webp"};
+const IMG={r1:"assets/landing/route1.webp",r2:"assets/routes/gatwick-london-premium.webp",r3:"assets/landing/route3.webp",r4:"assets/landing/route4.webp",m1:"assets/landing/mode1.webp",m2:"assets/landing/mode2.webp",m3:"assets/landing/mode3.webp"};
 const $=function(s){return document.querySelector(s);};
 const T={LHR:["Terminal 2","Terminal 3","Terminal 4","Terminal 5"],LGW:["North Terminal","South Terminal"],STN:["Main terminal"],LTN:["Main terminal"],LCY:["Main terminal"],SEN:["Main terminal"]};
 const A=[["LHR","Heathrow"],["LGW","Gatwick"],["STN","Stansted"],["LTN","Luton"],["LCY","City"],["SEN","Southend"]];
