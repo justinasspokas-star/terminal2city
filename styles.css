@@ -308,3 +308,23 @@
   .southampton-compare-table td{display:grid;grid-template-columns:84px minmax(0,1fr);gap:10px;border:0!important;border-top:1px solid #edf2f7!important;padding:9px 0!important;font-size:13px!important}
   .southampton-compare-table td:before{content:attr(data-label);color:#71839b;font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.04em}
 }
+
+
+/* southampton-cutout-art-v28 */
+.route-page-image.premium-route-art.southampton-route-art{
+  background:transparent;
+  border:0;
+  box-shadow:none;
+  padding:0;
+  overflow:visible;
+}
+.route-page-image.premium-route-art.southampton-route-art img{
+  width:100%;
+  height:auto;
+  object-fit:contain;
+  filter:drop-shadow(0 16px 28px rgba(21,56,96,.16));
+}
+@media(max-width:720px){
+  .route-page-image.premium-route-art.southampton-route-art{max-width:620px;margin:0 auto}
+  .route-page-image.premium-route-art.southampton-route-art img{filter:drop-shadow(0 10px 18px rgba(21,56,96,.14))}
+}
