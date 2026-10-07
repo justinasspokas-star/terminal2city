@@ -295,3 +295,16 @@
   .gatwick-compare-table td{display:grid;grid-template-columns:84px minmax(0,1fr);gap:10px;border:0!important;border-top:1px solid #edf2f7!important;padding:9px 0!important;font-size:13px!important}
   .gatwick-compare-table td:before{content:attr(data-label);color:#71839b;font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.04em}
 }
+
+
+/* heathrow-southampton-v27 */
+@media(max-width:720px){
+  .compare-table-wrap:has(.southampton-compare-table){overflow:visible;background:transparent;border:0;box-shadow:none}
+  .southampton-compare-table{display:block;min-width:0}
+  .southampton-compare-table thead{display:none}
+  .southampton-compare-table tbody{display:grid;gap:10px}
+  .southampton-compare-table tr{display:block;background:#fff;border:1px solid rgba(15,47,95,.1);border-radius:16px;padding:14px;box-shadow:var(--shadow-soft)}
+  .southampton-compare-table th{display:block;border:0!important;padding:0 0 10px!important;font-size:16px!important}
+  .southampton-compare-table td{display:grid;grid-template-columns:84px minmax(0,1fr);gap:10px;border:0!important;border-top:1px solid #edf2f7!important;padding:9px 0!important;font-size:13px!important}
+  .southampton-compare-table td:before{content:attr(data-label);color:#71839b;font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.04em}
+}
