@@ -335,6 +335,7 @@ function ticketInfo(option,context){
 
 function routeGuide(ap,cat){
   if(ap==="LHR"&&cat==="southampton") return "heathrow-to-southampton.html";
+  if(ap==="LGW"&&cat==="southampton") return "gatwick-to-southampton.html";
   if(ap==="LHR"&&cat==="oxford") return "heathrow-to-oxford.html";
   if(ap==="LGW"&&cat==="oxford") return "gatwick-to-oxford.html";
   if(ap==="STN"&&cat==="cambridge") return "stansted-to-cambridge.html";
@@ -350,6 +351,7 @@ function routeGuide(ap,cat){
 
 function directPublic(ap,cat){
   if(ap==="LHR"&&cat==="southampton") return coachOption("National Express direct coach");
+  if(ap==="LGW"&&cat==="southampton") return coachOption("National Express direct coach");
   if(ap==="LHR"&&cat==="oxford") return coachOption("The Airline coach");
   if(ap==="LGW"&&cat==="oxford") return coachOption("The Airline direct coach");
   if(ap==="STN"&&cat==="cambridge") return railOption("Greater Anglia direct train","Fast direct rail to Cambridge station",["Fastest published journey currently 29 minutes","Up to two trains per hour on weekdays","Compare Cambridge station with Parkside for your final address"],"0","Low","Good","Easy");
