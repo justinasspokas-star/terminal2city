@@ -60,7 +60,8 @@ const DESTINATION_AREAS={
   london:{s:51.27,n:51.72,w:-0.57,e:0.37},
   oxford:{s:51.68,n:51.82,w:-1.35,e:-1.12},
   brighton:{s:50.78,n:50.90,w:-0.25,e:-0.05},
-  southampton:{s:50.84,n:50.98,w:-1.52,e:-1.28}
+  southampton:{s:50.84,n:50.98,w:-1.52,e:-1.28},
+  cambridge:{s:52.14,n:52.27,w:0.02,e:0.22}
 };
 const DESTINATION_HUBS={
   london:[
@@ -83,6 +84,10 @@ const DESTINATION_HUBS={
   ],
   southampton:[
     {name:"Southampton Central",cat:"southampton",lat:50.9076,lng:-1.4136}
+  ],
+  cambridge:[
+    {name:"Cambridge railway station",cat:"cambridge",lat:52.1942,lng:0.1372},
+    {name:"Cambridge Parkside",cat:"cambridge",lat:52.2039,lng:0.1265}
   ]
 };
 
@@ -94,6 +99,7 @@ function destinationArea(lat,lng){
   if(insideArea(lat,lng,DESTINATION_AREAS.oxford)) return "oxford";
   if(insideArea(lat,lng,DESTINATION_AREAS.brighton)) return "brighton";
   if(insideArea(lat,lng,DESTINATION_AREAS.southampton)) return "southampton";
+  if(insideArea(lat,lng,DESTINATION_AREAS.cambridge)) return "cambridge";
   return "";
 }
 function haversineKm(aLat,aLng,bLat,bLng){
@@ -137,6 +143,7 @@ function destinationCategory(text,lat,lng){
   if(hasAny(s,["stratford"])) return "stratford";
   if(hasAny(s,["brighton"])) return "brighton";
   if(hasAny(s,["southampton","mayflower cruise terminal","horizon cruise terminal","city cruise terminal","ocean cruise terminal","qeii cruise terminal","queen elizabeth ii terminal"])) return "southampton";
+  if(hasAny(s,["cambridge","cambridge university","university of cambridge","trumpington","adddenbrookes","addenbrookes"])) return "cambridge";
   if(hasAny(s,["oxford"])) return "oxford";
   if(hasAny(s,["wembley"])) return "wembley";
   const lm=lastMileFor(lat,lng);
@@ -330,6 +337,7 @@ function routeGuide(ap,cat){
   if(ap==="LHR"&&cat==="southampton") return "heathrow-to-southampton.html";
   if(ap==="LHR"&&cat==="oxford") return "heathrow-to-oxford.html";
   if(ap==="LGW"&&cat==="oxford") return "gatwick-to-oxford.html";
+  if(ap==="STN"&&cat==="cambridge") return "stansted-to-cambridge.html";
   if(ap==="LGW"&&cat==="brighton") return "gatwick-to-brighton.html";
   if(ap==="LGW") return "gatwick-to-london.html";
   if(ap==="LHR") return "heathrow-to-london.html";
@@ -344,6 +352,7 @@ function directPublic(ap,cat){
   if(ap==="LHR"&&cat==="southampton") return coachOption("National Express direct coach");
   if(ap==="LHR"&&cat==="oxford") return coachOption("The Airline coach");
   if(ap==="LGW"&&cat==="oxford") return coachOption("The Airline direct coach");
+  if(ap==="STN"&&cat==="cambridge") return railOption("Greater Anglia direct train","Fast direct rail to Cambridge station",["Fastest published journey currently 29 minutes","Up to two trains per hour on weekdays","Compare Cambridge station with Parkside for your final address"],"0","Low","Good","Easy");
   if(ap==="LHR"&&cat==="paddington") return railOption("Heathrow Express","Non-stop airport rail to Paddington",["Your destination matches the Heathrow Express terminus","No London rail change before Paddington","Strong choice when speed to Paddington matters"],"0","Low","Good","Easy");
   if(ap==="LHR"&&["canary","city"].indexOf(cat)!==-1) return railOption("Elizabeth line","Direct cross-London rail is usually the cleanest first choice",["Serves several central and east-London stations directly","Reduces the need to change at Paddington","Good balance of speed and simplicity"],"0–1","Medium","Good","Easy");
   if(ap==="LHR"&&["kings","westend"].indexOf(cat)!==-1) return railOption("Piccadilly line or Elizabeth line","Choose the line that lands closest to your exact address",["A direct Tube corridor can beat a faster airport train plus another London change","Exact hotel location matters more than headline airport-train time","Compare the final walk before deciding"],"0–1","Medium","Moderate","Moderate");
