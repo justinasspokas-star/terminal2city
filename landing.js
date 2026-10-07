@@ -329,6 +329,7 @@ function ticketInfo(option,context){
 function routeGuide(ap,cat){
   if(ap==="LHR"&&cat==="southampton") return "heathrow-to-southampton.html";
   if(ap==="LHR"&&cat==="oxford") return "heathrow-to-oxford.html";
+  if(ap==="LGW"&&cat==="oxford") return "gatwick-to-oxford.html";
   if(ap==="LGW"&&cat==="brighton") return "gatwick-to-brighton.html";
   if(ap==="LGW") return "gatwick-to-london.html";
   if(ap==="LHR") return "heathrow-to-london.html";
@@ -342,6 +343,7 @@ function routeGuide(ap,cat){
 function directPublic(ap,cat){
   if(ap==="LHR"&&cat==="southampton") return coachOption("National Express direct coach");
   if(ap==="LHR"&&cat==="oxford") return coachOption("The Airline coach");
+  if(ap==="LGW"&&cat==="oxford") return coachOption("The Airline direct coach");
   if(ap==="LHR"&&cat==="paddington") return railOption("Heathrow Express","Non-stop airport rail to Paddington",["Your destination matches the Heathrow Express terminus","No London rail change before Paddington","Strong choice when speed to Paddington matters"],"0","Low","Good","Easy");
   if(ap==="LHR"&&["canary","city"].indexOf(cat)!==-1) return railOption("Elizabeth line","Direct cross-London rail is usually the cleanest first choice",["Serves several central and east-London stations directly","Reduces the need to change at Paddington","Good balance of speed and simplicity"],"0–1","Medium","Good","Easy");
   if(ap==="LHR"&&["kings","westend"].indexOf(cat)!==-1) return railOption("Piccadilly line or Elizabeth line","Choose the line that lands closest to your exact address",["A direct Tube corridor can beat a faster airport train plus another London change","Exact hotel location matters more than headline airport-train time","Compare the final walk before deciding"],"0–1","Medium","Moderate","Moderate");
