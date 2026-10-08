@@ -230,3 +230,11 @@ header nav{margin-left:auto}.cur select{appearance:none;-webkit-appearance:none;
 
 /* home-gatwick-southampton-guide-v37 */
 .home-gatwick-southampton-guide{background:linear-gradient(135deg,#eef7ff,#ffffff 56%,#fff4e5)}
+
+
+/* meta-inapp-compat-v38 */
+.meta-inapp body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif}
+.meta-inapp header{position:relative;-webkit-backdrop-filter:none;backdrop-filter:none;background:#fff}
+.meta-inapp .band{display:none!important}
+.meta-inapp .hero{background:linear-gradient(180deg,#d3e5fb 0%,#e8f2fe 100%)}
+.meta-inapp .card,.meta-inapp .search,.meta-inapp .partners{box-shadow:0 4px 16px rgba(15,31,92,.08)}
