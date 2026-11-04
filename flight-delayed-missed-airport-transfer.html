@@ -25,6 +25,20 @@
 .delay-steps{padding-left:24px}.delay-steps li{padding:0 0 10px 4px}.delay-steps li strong{color:#0f1f5c}
 .delay-links{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 24px}.delay-links a{display:inline-flex;border:1px solid #dae6f6;border-radius:10px;padding:9px 12px;text-decoration:none;font-weight:700;color:#2356a0;background:#f8fbff}
 @media(max-width:650px){.delay-tool-fields{grid-template-columns:1fr}.delay-tool{padding:16px}}
+
+/* AirHelp mobile CTA, scoped to this article only */
+.airhelp-mobile-float{display:none}
+@media(max-width:760px){
+  .airhelp-mobile-float{position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:40;display:flex;align-items:center;gap:8px;max-width:440px;margin:0 auto;padding:7px;background:#fff;border:1px solid #d8e5f1;border-radius:17px;box-shadow:0 8px 27px rgba(15,47,95,.17);opacity:0;visibility:hidden;pointer-events:none;transform:translateY(14px);transition:opacity .2s ease,transform .2s ease,visibility .2s ease}
+  .airhelp-mobile-float.is-visible{opacity:1;visibility:visible;pointer-events:auto;transform:translateY(0)}
+  .airhelp-mobile-link{min-width:0;min-height:50px;flex:1;display:flex;flex-direction:column;justify-content:center;padding:7px 12px;border-radius:11px;background:#123b77;color:#fff;text-decoration:none;text-align:center;line-height:1.2}
+  .airhelp-mobile-link strong{font-size:14px;line-height:1.2;color:#fff}
+  .airhelp-mobile-link small{display:block;margin-top:4px;font-size:10px;font-weight:600;color:#e6f1ff}
+  .airhelp-mobile-close{appearance:none;flex:0 0 42px;width:42px;height:44px;display:grid;place-items:center;border:0;border-radius:10px;background:#edf3fa;color:#19395d;font-size:24px;cursor:pointer}
+  .airhelp-mobile-link:focus-visible,.airhelp-mobile-close:focus-visible{outline:3px solid #f6aa32;outline-offset:2px}
+  body.airhelp-mobile-float-visible{padding-bottom:calc(100px + env(safe-area-inset-bottom,0px))}
+}
+@media(prefers-reduced-motion:reduce){.airhelp-mobile-float{transition:none}}
 </style>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZMV2C89Y30"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-ZMV2C89Y30');</script>
@@ -159,6 +173,12 @@
 </div></section>
 </main>
 <footer class="site-footer"><div class="wrap footer-inner"><span>© 2026 Terminal2City · Independent airport-to-destination route guides</span><div class="footer-links"><a href="airport-transfers.html">Routes</a><a href="guides.html">Guides</a><a href="how-we-compare-airport-transfers.html">How we compare</a><a href="about.html">About</a><a href="partners.html">For operators</a></div></div></footer>
+
+<aside id="airhelpMobileFloat" class="airhelp-mobile-float" aria-label="AirHelp flight compensation referral" aria-hidden="true">
+  <a class="airhelp-mobile-link" href="https://airhelp.tpx.lv/cu2eIdRX" target="_blank" rel="sponsored noopener noreferrer" tabindex="-1"><strong>✈️ Flight delayed? Check compensation</strong><small>AirHelp affiliate · fees may apply</small></a>
+  <button class="airhelp-mobile-close" id="airhelpMobileClose" type="button" aria-label="Dismiss AirHelp suggestion" tabindex="-1">×</button>
+</aside>
+
 <script src="mobile-ui.js?v=23"></script>
 <script>
 (function(){
@@ -177,6 +197,36 @@ else{headline="Estimated buffer: "+remaining+" minutes";explanation="This is a p
 result.innerHTML="<strong>"+headline+"</strong><p>"+explanation+"</p>";
 }
 fields.forEach(function(el){el.addEventListener("input",recalc);});recalc();
+})();
+</script>
+
+<script>
+(function(){
+  var cta=document.getElementById('airhelpMobileFloat');
+  var close=document.getElementById('airhelpMobileClose');
+  if(!cta||!close)return;
+  var link=cta.querySelector('a');
+  var dismissed=false;
+  try{dismissed=sessionStorage.getItem('t2c_airhelp_dismissed')==='1';}catch(e){}
+  var isMobile=window.matchMedia('(max-width: 760px)');
+  var footer=document.querySelector('.site-footer');
+  function isOnScreen(el){if(!el)return false;var r=el.getBoundingClientRect();return r.top<window.innerHeight&&r.bottom>0;}
+  function update(){
+    var show=isMobile.matches&&!dismissed&&window.scrollY>320&&!isOnScreen(footer);
+    cta.classList.toggle('is-visible',show);
+    cta.setAttribute('aria-hidden',show?'false':'true');
+    link.tabIndex=show?0:-1;
+    close.tabIndex=show?0:-1;
+    document.body.classList.toggle('airhelp-mobile-float-visible',show);
+  }
+  close.addEventListener('click',function(){
+    dismissed=true;
+    try{sessionStorage.setItem('t2c_airhelp_dismissed','1');}catch(e){}
+    update();
+  });
+  window.addEventListener('scroll',update,{passive:true});
+  window.addEventListener('resize',update);
+  update();
 })();
 </script>
 </body></html>
