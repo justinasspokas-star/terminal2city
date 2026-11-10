@@ -536,3 +536,6 @@
   .route-page-shell>*,.route-grid>*,.scenario-grid>*,.decision-grid>*,.airport-row>*,.utility-grid>*{min-width:0}
 }
 @media (max-width:360px){.airport-hub-card{padding:15px}.airport-hub-card h3{font-size:19px}}
+
+/* Let section CTAs wrap gracefully on narrow devices, instead of stretching cards. */
+@media (max-width:720px){.section-heading>a{white-space:normal;overflow-wrap:anywhere;max-width:100%}}
