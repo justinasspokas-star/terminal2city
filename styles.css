@@ -498,3 +498,15 @@
   .gatwick-southampton-table td{display:grid;grid-template-columns:84px minmax(0,1fr);gap:10px;border:0!important;border-top:1px solid #edf2f7!important;padding:9px 0!important;font-size:13px!important}
   .gatwick-southampton-table td:before{content:attr(data-label);color:#71839b;font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.04em}
 }
+
+/* Compact, accessible FAQ accordions — native HTML details keeps answers indexable. */
+.faq-list details.t2c-faq-accordion{padding:0;overflow:hidden}
+.faq-list details.t2c-faq-accordion>summary{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:16px 18px;cursor:pointer;list-style:none;color:var(--navy,#112957);font-size:16px;font-weight:800;line-height:1.45}
+.faq-list details.t2c-faq-accordion>summary::-webkit-details-marker{display:none}
+.faq-list details.t2c-faq-accordion>summary::after{content:"+";display:grid;place-items:center;flex:none;width:28px;height:28px;border-radius:50%;background:#eaf2ff;color:#2860ad;font-size:22px;font-weight:600;line-height:1}
+.faq-list details.t2c-faq-accordion[open]>summary{border-bottom:1px solid #e1eafb}
+.faq-list details.t2c-faq-accordion[open]>summary::after{content:"−"}
+.faq-list details.t2c-faq-accordion>summary:hover{background:#f7faff}
+.faq-list details.t2c-faq-accordion>summary:focus-visible{outline:3px solid #3a6df0;outline-offset:-3px}
+.faq-list details.t2c-faq-accordion>p{margin:0;padding:14px 18px 18px;color:var(--muted,#526783);font-size:14px;font-weight:650;line-height:1.65}
+@media (max-width:600px){.faq-list details.t2c-faq-accordion>summary{padding:14px 15px;font-size:15px}.faq-list details.t2c-faq-accordion>p{padding:13px 15px 16px}}
