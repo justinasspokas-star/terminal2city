@@ -539,3 +539,17 @@
 
 /* Let section CTAs wrap gracefully on narrow devices, instead of stretching cards. */
 @media (max-width:720px){.section-heading>a{white-space:normal;overflow-wrap:anywhere;max-width:100%}}
+
+
+/* First taxi & private transfer affiliate option — responsive and clearly disclosed. */
+.t2c-transfer-offer{display:flex;align-items:center;gap:16px;min-width:0;margin:16px 0;padding:17px 18px;border:1px solid #cbdff9;border-radius:18px;background:linear-gradient(120deg,#f1f7ff,#fff);box-shadow:0 6px 20px rgba(18,53,110,.06)}
+.t2c-transfer-offer-icon{flex:none;display:grid;place-items:center;width:44px;height:44px;border-radius:14px;background:#e5efff;font-size:23px}
+.t2c-transfer-offer-copy{min-width:0;flex:1}
+.t2c-transfer-eyebrow{display:block;font-size:10px;font-weight:900;letter-spacing:.07em;text-transform:uppercase;color:#2254a4}
+.t2c-transfer-offer h3{margin:3px 0 5px;color:#142e61;font-size:18px;line-height:1.3;letter-spacing:-.02em}
+.t2c-transfer-offer p{margin:0;color:#526682;font-size:13px;font-weight:600;line-height:1.55}
+.t2c-transfer-offer small{display:block;margin-top:6px;color:#64748b;font-size:11px;line-height:1.45}
+.t2c-transfer-offer-button{display:inline-flex;align-items:center;justify-content:center;text-align:center;flex:none;max-width:100%;min-height:45px;padding:11px 15px;border-radius:12px;background:#183e81;color:#fff!important;font-size:13px;font-weight:850;line-height:1.4;white-space:normal}
+.t2c-transfer-offer-button:hover{background:#2759ae;text-decoration:none}
+.t2c-transfer-offer-button:focus-visible{outline:3px solid #3a6df0;outline-offset:3px}
+@media(max-width:700px){.t2c-transfer-offer{align-items:flex-start;flex-wrap:wrap;gap:10px;padding:15px}.t2c-transfer-offer-icon{width:38px;height:38px;font-size:20px}.t2c-transfer-offer-copy{flex:1 1 calc(100% - 52px)}.t2c-transfer-offer-button{width:100%;min-height:48px}}

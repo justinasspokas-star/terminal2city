@@ -625,3 +625,40 @@
     });
   });
 })();
+
+/* First taxi/private-transfer affiliate option for route searches. */
+(function(){
+  'use strict';
+  var url='https://tpx.lv/5sruesFp';
+  function offer(route){
+    var el=document.createElement('aside');
+    el.className='t2c-transfer-offer';
+    el.setAttribute('aria-label','Taxi and private transfer partner option');
+    el.setAttribute('data-route-id',route||'route-search');
+    el.innerHTML='<div class="t2c-transfer-offer-icon" aria-hidden="true">🚕</div>'+
+    '<div class="t2c-transfer-offer-copy"><span class="t2c-transfer-eyebrow">Taxi &amp; private transfers</span><h3>Want a door-to-door airport pickup?</h3>'+
+    '<p>View taxi and private-transfer offers for your journey. Confirm the airport, destination, group, luggage, final price, flight tracking and cancellation terms on the partner site.</p>'+
+    '<small>Affiliate link: Terminal2City may earn a commission. No live prices or availability are checked here.</small></div>'+
+    '<a class="t2c-transfer-offer-button" href="'+url+'" target="_blank" rel="sponsored noopener noreferrer" data-affiliate="taxi-transfer-partner">View taxi &amp; transfer options ↗</a>';
+    return el;
+  }
+  document.querySelectorAll('[data-route-planner]').forEach(function(planner){
+    var output=planner.querySelector('[data-decision-output]');
+    if(output&&!planner.querySelector('.t2c-transfer-offer'))output.insertAdjacentElement('afterend',offer(planner.getAttribute('data-route-id')));
+  });
+  if(!document.querySelector('[data-route-planner]')){
+    document.querySelectorAll('[data-split-calculator]').forEach(function(calc){
+      if(!calc.nextElementSibling||!calc.nextElementSibling.classList.contains('t2c-transfer-offer'))calc.insertAdjacentElement('afterend',offer('fare-comparison'));
+    });
+  }
+  var unknown=document.querySelector('[data-unpublished-route]');
+  if(unknown&&!document.querySelector('.t2c-transfer-offer'))unknown.insertAdjacentElement('afterend',offer('exact-destination-search'));
+  document.addEventListener('click',function(e){
+    if(window.__t2cTrackingInstalled)return;
+    var target=e.target&&e.target.nodeType===1?e.target:e.target.parentElement;
+    var a=target&&target.closest?target.closest('a[data-affiliate="taxi-transfer-partner"]'):null;
+    if(!a||typeof window.gtag!=='function')return;
+    var box=a.closest('[data-route-id]');
+    window.gtag('event','affiliate_click',{affiliate_provider:'taxi-transfer-partner',source_page:location.pathname,route_id:box?box.getAttribute('data-route-id'):'search',link_placement:'comparison_offer',outbound_domain:'tpx.lv'});
+  },false);
+})();

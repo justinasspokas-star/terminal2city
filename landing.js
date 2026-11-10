@@ -587,6 +587,11 @@ function show(){
     '<div class="recommendation-callout"><span>Why this wins for your trip</span><p>'+esc(rec.rationale)+'</p></div>'+
     '<div class="cost-disclaimer"><b>True group cost</b><span>Reference totals are shown only where we have a current public fare rule. Dynamic options stay marked “Live fare needed” until operator pricing is connected.</span></div>'+
     '<div class="journey-grid">'+optionMarkup(options[0],true,context,costs[0],costs[0].known&&Math.abs(costs[0].total-minKnown)<0.01,knownCount)+options.slice(1).map(function(o,i){const cost=costs[i+1];return optionMarkup(o,false,context,cost,cost.known&&Math.abs(cost.total-minKnown)<0.01,knownCount);}).join("")+'</div>'+
+    '<aside class="t2c-transfer-offer" data-route-id="'+esc(ap+'-'+rec.cat)+'" aria-label="Taxi and private transfer partner option">'+
+    '<div class="t2c-transfer-offer-icon" aria-hidden="true">🚕</div>'+
+    '<div class="t2c-transfer-offer-copy"><span class="t2c-transfer-eyebrow">Taxi &amp; private transfers</span><h3>Want a door-to-door airport pickup?</h3><p>View partner taxi and transfer offers for your journey. Check your airport, exact destination, group, luggage, final fare and waiting-time rules on the provider site.</p><small>Affiliate link. No live prices or availability are checked here.</small></div>'+
+    '<a class="t2c-transfer-offer-button" href="https://tpx.lv/5sruesFp" target="_blank" rel="sponsored noopener noreferrer" data-affiliate="taxi-transfer-partner">View taxi &amp; transfer options ↗</a>'+
+    '</aside>'+
     '<div class="result-footer"><div><b>Planning note</b><p>Child fares and ticket conditions can change by operator and ticket type. Terminal exit time includes a planning buffer for passport control, baggage reclaim and airport walking. Always verify the live fare, timetable and operator conditions before booking.</p></div><a class="guide-link" href="'+rec.guide+'">Open detailed route guide →</a></div>';
 
   try{
