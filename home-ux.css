@@ -145,3 +145,22 @@
 }
 @media(max-width:365px){.home-page .search{grid-template-columns:minmax(0,1fr)}.home-page .search .f{grid-column:1/-1}.home-page .logo{font-size:19px}.home-form-tag{display:none}.home-page .trust{grid-template-columns:1fr}.home-page .card .row strong{font-size:13px}}
 @media(prefers-reduced-motion:reduce){.home-page *{scroll-behavior:auto!important;transition:none!important}}
+
+
+/* Desktop hero: preserve the full artwork while bringing the search into view. */
+@media(min-width:721px){
+  .home-page .hero{padding:24px 0 12px}
+  .home-page .hero .in{width:min(920px,calc(100% - 48px));max-width:920px;margin:0 auto}
+  .home-page .hero h1{font-size:clamp(36px,4vw,52px);line-height:1.05}
+  .home-page .hero p{max-width:760px;margin:10px auto 0;line-height:1.5}
+  .home-page .hero .band{width:min(100%,1040px);max-width:1040px;height:auto;margin:12px auto 0;object-fit:contain;object-position:center bottom}
+  .home-page .search{margin:0 auto;max-width:1080px;padding:18px 22px;gap:10px;box-shadow:0 12px 32px #142c521a}
+}
+@media(min-width:721px) and (max-width:1200px){
+  .home-page .hero .band{max-width:920px}
+}
+@media(min-width:721px) and (max-width:1020px){
+  .home-page .hero{padding:20px 0 10px}
+  .home-page .hero .band{max-width:860px}
+  .home-page .search{padding:16px}
+}
