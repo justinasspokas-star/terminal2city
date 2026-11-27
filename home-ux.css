@@ -9,9 +9,9 @@
 .home-page .hero .in{position:relative;top:auto;order:1;padding:0;text-shadow:none}
 .home-page .hero h1{font-size:clamp(32px,4.4vw,52px);line-height:1.07;letter-spacing:-.045em}
 .home-page .hero p{max-width:650px;font-size:16px;line-height:1.6;margin:12px auto 0;padding:0 8px}
-.home-page .hero .band{position:relative;inset:auto;order:2;width:100%;height:clamp(100px,13vw,195px);object-fit:cover;object-position:center bottom;margin-top:10px;mask-image:linear-gradient(180deg,transparent,#000 24%);-webkit-mask-image:linear-gradient(180deg,transparent,#000 24%)}
+.home-page .hero .band{position:relative;inset:auto;order:2;display:block;width:100%;max-width:1180px;height:auto;aspect-ratio:auto;flex:none;object-fit:contain;object-position:center bottom;margin:12px auto 0;transform:none;mask-image:none;-webkit-mask-image:none}
 .home-page .hero .note{display:none}
-.home-page .search{margin:-14px auto 0;max-width:1080px;grid-template-columns:minmax(0,1.25fr) minmax(0,.8fr) minmax(0,1.65fr);gap:12px;align-items:stretch;padding:22px;border:1px solid var(--home-line);border-radius:22px;box-shadow:0 12px 34px #142c5218;scroll-margin-top:10px}
+.home-page .search{margin:12px auto 0;max-width:1080px;grid-template-columns:minmax(0,1.25fr) minmax(0,.8fr) minmax(0,1.65fr);gap:12px;align-items:stretch;padding:22px;border:1px solid var(--home-line);border-radius:22px;box-shadow:0 12px 34px #142c5218;scroll-margin-top:10px}
 .home-form-heading{grid-column:1/-1;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding-bottom:5px}
 .home-form-heading strong{display:block;color:var(--home-ink);font-size:23px;line-height:1.2;letter-spacing:-.035em}
 .home-form-heading p{margin:5px 0 0;font-size:13px;color:var(--home-muted);line-height:1.5}
@@ -91,8 +91,8 @@
 .home-page .hero{padding:21px 0 0}
 .home-page .hero h1{font-size:clamp(28px,7.7vw,36px)}
 .home-page .hero p{font-size:14px;line-height:1.55;max-width:390px;margin-top:9px}
-.home-page .hero .band{height:clamp(70px,21vw,115px);margin-top:6px;object-fit:contain;object-position:bottom}
-.home-page .search{margin:-4px auto 0;padding:14px;gap:10px;border-radius:18px;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr)}
+.home-page .hero .band{width:100%;max-width:none;height:auto;aspect-ratio:auto;margin:10px 0 0;object-fit:contain;object-position:center bottom}
+.home-page .search{margin:10px auto 0;padding:14px;gap:10px;border-radius:18px;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr)}
 .home-form-heading{gap:7px;padding-bottom:3px}
 .home-form-heading strong{font-size:20px}
 .home-form-heading p{font-size:12px}
