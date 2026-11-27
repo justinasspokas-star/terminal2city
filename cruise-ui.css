@@ -94,3 +94,12 @@
 .cruise-sticky-link{grid-column:1/-1;grid-row:2;width:100%;min-height:46px}
 }
 @media(prefers-reduced-motion:reduce){.cruise-page *{scroll-behavior:auto!important}}
+
+/* Viator transfer partner: differentiated from the purple luggage offer. */
+.cruise-page .viator-transfer-card{margin:20px 0 24px;padding:24px;border:1px solid #c9dfd7;border-left:4px solid #276c57;border-radius:18px;background:linear-gradient(140deg,#fff,#eef8f4)}
+.cruise-page .viator-transfer-card .eyebrow{color:#276c57;display:block;margin-bottom:8px}
+.cruise-page .viator-transfer-card h3{font-size:22px;line-height:1.25;margin:0 0 10px}
+.cruise-page .viator-transfer-card .button{background:#276c57;color:white;border:0;max-width:100%;line-height:1.4;padding:12px 16px}
+.cruise-page .viator-transfer-card .button:hover{background:#1d5343}
+.cruise-page .viator-transfer-card .source-note{font-size:12px;margin:12px 0 0;line-height:1.5}
+@media(max-width:720px){.cruise-page .viator-transfer-card{padding:17px;margin:16px 0 20px}.cruise-page .viator-transfer-card h3{font-size:20px}.cruise-page .viator-transfer-card .button{width:100%;min-height:48px}}
