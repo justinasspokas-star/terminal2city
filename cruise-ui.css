@@ -1,0 +1,96 @@
+
+/* Cruise-only presentation. Existing airport pages do not load this stylesheet. */
+.cruise-page{--cr-ink:#142c52;--cr-muted:#52647c;--cr-blue:#2156c6;--cr-border:#dce6f3;--cr-purple:#5b35b5;--cr-bar-space:112px;color:var(--cr-ink)}
+.cruise-page main{overflow-wrap:break-word}
+.cruise-page .route-page-hero{background:radial-gradient(ellipse at 85% 20%,#b7ddf6 0%,transparent 50%),linear-gradient(145deg,#eaf4ff,#f5f9ff 65%,#e8f3fa);padding:28px 0 38px}
+.cruise-page .breadcrumb{font-size:12px;line-height:1.6;margin-bottom:19px;color:var(--cr-muted)}
+.cruise-page .route-page-shell.route-page-shell-text-only{display:grid;grid-template-columns:minmax(0,1fr) minmax(170px,260px);align-items:center;gap:32px;max-width:none}
+.cruise-page .route-page-copy h1{font-size:clamp(32px,4.2vw,52px);letter-spacing:-.045em;line-height:1.09;margin:12px 0 17px;color:var(--cr-ink)}
+.cruise-page .route-page-copy>p{font-size:17px;line-height:1.7;color:var(--cr-muted);max-width:700px}
+.cruise-hero-art{display:flex;justify-content:center;align-items:center;color:#2457a3;min-width:0}
+.cruise-hero-art svg{display:block;width:100%;max-width:240px;height:auto}
+.cruise-page .updated-chip{white-space:normal;line-height:1.5}
+.cruise-page .section{padding:42px 0}
+.cruise-page .section>.wrap{max-width:1040px}
+.cruise-page .section-heading{margin-bottom:18px}
+.cruise-page .section-heading h2{font-size:clamp(24px,3vw,34px);line-height:1.2;letter-spacing:-.03em;color:var(--cr-ink);margin:0}
+.cruise-page .section>.wrap>p,.cruise-page .section>.wrap>ul,.cruise-page .section>.wrap>ol{font-size:16px;line-height:1.8;color:var(--cr-muted);max-width:85ch}
+.cruise-page .section>.wrap>ul,.cruise-page .section>.wrap>ol{padding-left:24px}
+.cruise-page li+li{margin-top:7px}
+.cruise-page .soft-section{background:#f2f7fc}
+.cruise-page .info-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.cruise-page .info-card{min-width:0;padding:22px;border:1px solid var(--cr-border);border-radius:18px;background:#fff;box-shadow:0 5px 20px #163b6810}
+.cruise-page .info-card h3{font-size:19px;line-height:1.3;margin:0 0 9px;color:var(--cr-ink)}
+.cruise-page .info-card p{font-size:15px;line-height:1.7;color:var(--cr-muted);margin:0}
+.cruise-page main a:not(.button):not(.cruise-jump-link):not(.cruise-sticky-link){text-underline-offset:3px}
+.cruise-page .info-card a:not(.button),.cruise-page .section>.wrap>p a{color:var(--cr-blue);text-decoration:underline;font-weight:650}
+.cruise-page .button{min-height:48px;display:inline-flex;align-items:center;justify-content:center;white-space:normal;text-align:center}
+.cruise-jump{background:#fff;border-bottom:1px solid var(--cr-border)}
+.cruise-jump .wrap{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding-top:15px;padding-bottom:15px}
+.cruise-jump-label{font-size:13px;font-weight:800;color:var(--cr-ink);margin-right:4px}
+.cruise-jump-link{display:inline-flex;align-items:center;min-height:44px;padding:8px 14px;background:#f3f7fc;border:1px solid var(--cr-border);border-radius:10px;color:var(--cr-blue);font-size:13px;font-weight:750;text-decoration:none}
+.cruise-jump-link:hover{background:#e4eeff}
+.cruise-page section[id],.cruise-page #storage-options{scroll-margin-top:90px}
+.cruise-page .compare-table-wrap{margin:18px 0;border:1px solid var(--cr-border);overflow:auto;border-radius:16px;box-shadow:none}
+.cruise-page .compare-table{min-width:0;table-layout:fixed;width:100%}
+.cruise-page .compare-table th,.cruise-page .compare-table td{overflow-wrap:anywhere;font-size:14px;line-height:1.6;padding:15px}
+.cruise-page .compare-table thead th{font-size:12px;color:var(--cr-ink);background:#eaf2fd}
+.cruise-page .compare-table tbody tr:nth-child(even){background:#f7faff}
+.cruise-page .compare-table tbody tr:last-child>*{border-bottom:0}
+.cruise-page .cruise-affiliate-card{position:relative;margin:20px 0 24px;padding:24px;background:linear-gradient(140deg,#fff,#f4efff);border:1px solid #d9ccf7;border-radius:20px;box-shadow:0 7px 25px #4427770c}
+.cruise-page .cruise-affiliate-card .eyebrow{display:block;color:var(--cr-purple);margin:0 0 8px}
+.cruise-page .cruise-affiliate-card h3{font-size:23px;margin:0 0 10px;line-height:1.25}
+.cruise-page .cruise-affiliate-card .source-note{font-size:12px;line-height:1.5;color:#5c526e;margin-top:12px}
+.cruise-page .cruise-affiliate-card .button{background:var(--cr-purple);color:#fff;border:0}
+.cruise-page .cruise-affiliate-card .button:hover{background:#462695}
+.cruise-page .cruise-affiliate-card .cruise-provider-mark{float:right;display:inline-grid;place-items:center;width:46px;height:46px;color:var(--cr-purple);background:#eae0ff;border-radius:13px;margin-left:14px}
+.cruise-page .faq-list{display:grid;gap:10px}
+.cruise-page .faq-item{background:#fff;border:1px solid var(--cr-border);border-radius:13px;box-shadow:none}
+.cruise-page .faq-item summary{padding:16px;min-height:48px;cursor:pointer;line-height:1.5;font-weight:750;color:var(--cr-ink)}
+.cruise-page .faq-item p{padding:0 16px 16px;line-height:1.7;color:var(--cr-muted)}
+.cruise-page .source-links{display:flex;flex-wrap:wrap;gap:8px;align-items:center;line-height:1.6}
+.cruise-page :focus-visible{outline:3px solid #285bd7;outline-offset:3px}
+.cruise-sticky[hidden]{display:none!important}
+.cruise-sticky{position:fixed;z-index:90;bottom:calc(14px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);width:min(760px,calc(100% - 28px));display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;align-items:center;gap:14px;background:#fff;color:var(--cr-ink);padding:12px 15px;border:1px solid #dbe3f0;border-radius:18px;box-shadow:0 8px 36px #142c5233}
+.cruise-sticky-icon{display:grid;place-items:center;width:44px;height:44px;border-radius:12px;color:var(--cr-purple);background:#eee6ff}
+.cruise-sticky-copy{display:grid;gap:3px;min-width:0}
+.cruise-sticky-copy strong{font-size:15px;line-height:1.25}
+.cruise-sticky-copy small{font-size:11px;line-height:1.4;color:var(--cr-muted)}
+.cruise-sticky-link{display:inline-flex;align-items:center;justify-content:center;gap:6px;text-align:center;min-height:48px;padding:10px 17px;background:var(--cr-purple);color:#fff!important;border-radius:12px;font-size:14px;font-weight:800;text-decoration:none}
+.cruise-sticky-link:hover{background:#462695}
+.cruise-sticky-close{display:grid;place-items:center;width:36px;min-height:44px;border:0;border-radius:8px;background:transparent;color:var(--cr-muted);font:inherit;font-size:25px;cursor:pointer}
+.cruise-sticky-close:hover{background:#edf2f8}
+.cruise-page.cruise-sticky-active{padding-bottom:calc(var(--cr-bar-space) + env(safe-area-inset-bottom,0px))}
+@media(max-width:720px){
+.cruise-page .route-page-hero{padding:20px 0 28px}
+.cruise-page .route-page-shell.route-page-shell-text-only{grid-template-columns:minmax(0,1fr);gap:0}
+.cruise-hero-art{display:none}
+.cruise-page .route-page-copy h1{font-size:clamp(30px,8vw,39px)}
+.cruise-page .route-page-copy>p{font-size:16px;line-height:1.65}
+.cruise-page .section{padding:28px 0}
+.cruise-page .section-heading{margin-bottom:14px}
+.cruise-page .info-grid{grid-template-columns:minmax(0,1fr);gap:12px}
+.cruise-page .info-card{padding:17px}
+.cruise-jump .wrap{gap:6px;padding-top:10px;padding-bottom:10px}
+.cruise-jump-label{flex-basis:100%}
+.cruise-jump-link{padding:8px 11px;font-size:12px}
+.cruise-page .compare-table-wrap{overflow:visible;background:transparent;border:0;box-shadow:none}
+.cruise-page .compare-table,.cruise-page .compare-table tbody,.cruise-page .compare-table tr{display:block;min-width:0;width:100%}
+.cruise-page .compare-table thead{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.cruise-page .compare-table tbody{display:grid;gap:10px}
+.cruise-page .compare-table tbody tr{padding:14px;background:#fff;border:1px solid var(--cr-border);border-radius:14px}
+.cruise-page .compare-table tbody th{display:block;padding:0 0 10px;border:0;font-size:16px}
+.cruise-page .compare-table tbody td{display:grid;grid-template-columns:minmax(76px,1fr) minmax(0,2fr);gap:10px;padding:10px 0;border:0;border-top:1px solid #e8eef5;font-size:13px}
+.cruise-page .compare-table tbody td::before{content:attr(data-label);font-size:11px;font-weight:750;color:var(--cr-muted)}
+.cruise-page .cruise-affiliate-card{padding:18px;margin:16px 0 20px}
+.cruise-page .cruise-affiliate-card h3{font-size:21px}
+.cruise-page .cruise-affiliate-card .button{width:100%}
+.cruise-sticky{bottom:0;left:0;transform:none;width:100%;border-radius:16px 16px 0 0;border-bottom:0;padding:9px 12px calc(10px + env(safe-area-inset-bottom,0px));grid-template-columns:minmax(0,1fr) auto;gap:6px 10px}
+.cruise-sticky-icon{display:none}
+.cruise-sticky-copy{grid-column:1;grid-row:1}
+.cruise-sticky-copy strong{font-size:14px}
+.cruise-sticky-copy small{font-size:10px}
+.cruise-sticky-close{grid-column:2;grid-row:1;width:36px;min-height:32px}
+.cruise-sticky-link{grid-column:1/-1;grid-row:2;width:100%;min-height:46px}
+}
+@media(prefers-reduced-motion:reduce){.cruise-page *{scroll-behavior:auto!important}}
